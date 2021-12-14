@@ -1,0 +1,47 @@
+<div style="background-color: lightgray; padding-top:70px; height: 100%;">
+    <div class="container">
+        <div class="row">
+                <img src="https://logos-world.net/wp-content/uploads/2020/05/Pokemon-Logo.png" class="rounded mx-auto d-block" style="width: 50%;">
+        </div>
+        <div class="row">
+        
+        <div class="col-12">
+            <h2 style="text-align: center;">Welcome to the Personal Pokedex!</h2>
+        </div>
+        
+    </div>
+    <div class="row">
+        
+        <div class="col-12">
+            <h3 style="text-align: center;">This application allows you to manage your own Pokedex!</h3>
+        </div>
+        <div class="col-12">
+            <h3 style="text-align: center;">Here are three Pokemon to get you started</h3>
+        </div>
+        
+    </div>
+    <div class="row">
+        <div *ngFor="let pokemon of pokedex_list | async" class="col-4 p-2">
+            <div class="card text-black bg-black mb-3" style = "width: 40%; margin: auto" [routerLink]="['/pokedex', pokemon._id]"
+                style="cursor: pointer" >
+                <div class="card-header" style="background-color: red; color:white">Name: {{ pokemon.name }}  |  Dex Number: {{pokemon.num}} </div>
+                <div class="card-body" style="background-color: black;"></div>
+                <div class="card-body" style="background-color: white;"><div style="text-align: center;"><img [attr.src]="pokemon.img" style="height: 400; width: 400;"></div></div>
+                <div class="card-body" style="background-color: black;"></div>
+                <div class="card-footer" style="background-color: white;">Type: {{ pokemon.type }}</div>
+            
+        </div>
+       
+    </div> <!-- col -->
+        </div> <!-- row -->
+        <div class="col-12">
+            
+            <button class="btn btn-secondary"
+                (click)="OnRandomPokemon()">New set of Pokemon</button>
+            
+        </div>
+        &nbsp;
+    </div>
+</div>
+
+    
