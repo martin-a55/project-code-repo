@@ -1,0 +1,31 @@
+<div style="padding-top:70px; height: 100%;">
+    <div class="container">
+        <div class="row">
+                <div *ngFor="let location of location_list | paginate: { itemsPerPage: 12, currentPage: page }" class="col-4 p-1">
+                    <div class="card" style = "width: 40%; margin: auto" style="cursor: pointer" >
+                        <img class = "card-img-top" [attr.src]="'https://projectqrstore.blob.core.windows.net/qrimagestore/' + location._id + '.png'">
+                        <div class="card-header">
+                            <div class="row">
+                                <div class="col-6"><button class="btn btn-primary" [routerLink]="['/location', location._id]">Get Stock Details</button></div>
+                                <div class="col-6"><button class="btn btn-primary"(click)="DownloadQR(location._id)">Download QR Code</button></div>
+                            </div>
+                        </div>
+                        <div class="card-body" style="background-color: rgb(22, 75, 175); color: white;">
+                            <div class="row">
+                                <div class="col-6">Location: {{ location.location }}</div>
+                                <div class="col-6">Warehouse: {{ location.warehouse }}</div>
+                                </div>
+                        </div>
+                        <div class="card-footer" style="background-color: white;">
+                            <div class="col-4">Rack: {{ location.stock_rack }}</div>
+                            <div class="col-4">Row: {{ location.rack_column }}</div>
+                            <div class="col-4">Column: {{ location.rack_row }}</div>
+                        </div>
+                </div>
+            </div> 
+        </div> 
+        <div class="row">
+            <pagination-controls (pageChange)="page = $event"></pagination-controls>
+        </div>
+</div>
+        

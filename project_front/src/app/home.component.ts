@@ -11,24 +11,11 @@ import { WebService } from './web.service';
 export class HomeComponent {
     constructor(public authService: AuthService, public webService: WebService) {}
 
-    page : any
-
-    pages : any
-
     ngOnInit() {
-        this.pokedex_list = this.webService.getShortPokedex(this.page);      
-        this.OnRandomPokemon();  
+        
     }
-
-    OnRandomPokemon(){
-        this.webService.getPages().subscribe((value : any) => { 
-            this.pages = Math.floor(((value[0].totalPages -1) * 10) / 3)
-            this.page = Math.floor(Math.random() * this.pages) + 1;
-            this.pokedex_list = this.webService.getShortPokedex(this.page);
-    });
-    }
+}
     
 
-    pokedex_list : any = []; 
- }
+   
 

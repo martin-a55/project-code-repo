@@ -1,7 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
-//pokedex_list : any;
 
 @Injectable()
 export class WebService {
@@ -11,16 +10,22 @@ export class WebService {
 
  pages : any; 
 
- getPokedex(page: number) {
+ getStockLoactions() {
   return this.http.get(
-    'http://localhost:5000/api/v1.0/pokemon?pn=' + page);
+    'http://localhost:5000/api/v1.0/location');
   }
 
-  getShortPokedex(page: number) {
+  getOneStockLocation(id: any) {
     return this.http.get(
-      
-      'http://localhost:5000/api/v1.0/pokemon?pn=' + page + '&ps=3');
+      'http://localhost:5000/api/v1.0/location/' + id);
+  }
+
+  getStock(id: any) {
+    return this.http.get(
+    'http://localhost:5000/api/v1.0/location/' + id + '/stock');
     }
+
+ 
 
   getPages() {
     return this.http.get(
