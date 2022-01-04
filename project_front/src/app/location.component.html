@@ -2,7 +2,7 @@
     <div class="container">
         <div class="row">
                 <div *ngFor="let location of location_list | paginate: { itemsPerPage: 12, currentPage: page }" class="col-4 p-1">
-                    <div class="card" style = "width: 40%; margin: auto" style="cursor: pointer" >
+                    <div class="card" style = "width: 40%; margin: auto" style="background-color: white;" >
                         <img class = "card-img-top" [attr.src]="'https://projectqrstore.blob.core.windows.net/qrimagestore/' + location._id + '.png'">
                         <div class="card-header">
                             <div class="row">
@@ -27,5 +27,55 @@
         <div class="row">
             <pagination-controls (pageChange)="page = $event"></pagination-controls>
         </div>
+        <form  [formGroup]="locationForm"  (ngSubmit)="OnLocationSubmit()">
+            <div class="row">
+              <h3>Add new stock location</h3>
+            </div>
+            <div class="row">
+                  <div class="col-1"><label for="location">Location:</label></div>
+                  <div class="col-2"><div class="form-group"> 
+                    <input id="location" name="location"
+                        class="form-control" 
+                        formControlName="location"
+                        type="text">
+                  </div></div>
+                  <div class="col-1"><label for="warehouse">Warehouse:</label></div>
+                  <div class="col-2"><div class="form-group"> 
+                    <input id="warehouse" name="warehouse"
+                        class="form-control" 
+                        formControlName="warehouse"
+                        type="text">
+                  </div></div>
+                </div>
+                <div class="row">&nbsp;</div>
+                <div class="row">
+                    <div class="col-1"><label for="rack">Rack:</label></div>
+                    <div class="col-2"><div class="form-group"> 
+                      <input id="rack" name="rack"
+                          class="form-control" 
+                          formControlName="rack"
+                          type="text">
+                    </div></div>
+                    <div class="col-1"><label for="row">Row:</label></div>
+                    <div class="col-2"><div class="form-group"> 
+                      <input id="row" name="row"
+                          class="form-control" 
+                          formControlName="row"
+                          type="text">
+                    </div></div>
+                    <div class="col-1"><label for="column">Column:</label></div>
+                    <div class="col-2"><div class="form-group"> 
+                      <input id="column" name="column"
+                          class="form-control" 
+                          formControlName="column"
+                          type="text">
+                    </div></div>
+                </div>
+            
+                  <div class="row">
+                <div class="col-3"><button type="submit" class="btn btn-primary">Submit</button></div>
+            </div>
+            <div class="row">&nbsp;</div>
+          </form>
 </div>
         

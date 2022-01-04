@@ -31,14 +31,14 @@ def get_all_stock_locations():
 
 @app.route("/api/v1.0/location/<string:id>", methods=["GET"])
 def get_one_stock_location(id):
-    location_to_return = []
+
     location = stockCol.find_one({'_id': ObjectId(id)})
     if location is not None:
         location['_id'] = str(location['_id'])
         for stock in location["stock"]:
             stock['_id'] = str(stock['_id'])
-        location_to_return.append(location)
-        return make_response(jsonify(location_to_return), 200)
+
+        return make_response(jsonify(location), 200)
     else:
         return make_response(jsonify( {"error": "Invalid Stock Location ID, check your location exists and try again"}), 404)
 

@@ -39,7 +39,7 @@ var routes: any = [
     BrowserModule, HttpClientModule, RouterModule.forRoot(routes), ReactiveFormsModule, NgxPaginationModule,
     AuthModule.forRoot( {
       domain:'dev-7zcg37ii.us.auth0.com',
-      clientId: 'HjQRaWRFhKwwVRZKJj0e5haq9mKTVlLT'
+      clientId: 'BpdTa5sipFOojHYNJr9QzElCfRHO3BxM'
       })
   ],
   providers: [WebService],
