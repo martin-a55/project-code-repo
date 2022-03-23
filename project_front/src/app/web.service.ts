@@ -63,6 +63,8 @@ export class WebService {
 
       postStock(stock: any, id: any) {
         let postData = new FormData();
+        console.log(stock.desc);
+        
         postData.append("name", stock.name);
         postData.append("quantity", stock.qty);
         postData.append("desc", stock.desc);

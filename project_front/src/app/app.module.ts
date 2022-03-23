@@ -12,6 +12,7 @@ import { NavComponent } from './nav.component';
 import { LocationComponent } from './location.component';
 import {NgxPaginationModule} from 'ngx-pagination';
 import { StockComponent } from './stock.component';
+import { InsightService } from './insight.service';
 
 
 
@@ -42,7 +43,7 @@ var routes: any = [
       clientId: 'BpdTa5sipFOojHYNJr9QzElCfRHO3BxM'
       })
   ],
-  providers: [WebService],
+  providers: [WebService, InsightService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

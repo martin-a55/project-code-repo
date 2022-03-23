@@ -3,6 +3,7 @@ import { WebService } from './web.service';
 import { FormBuilder, Validators } from '@angular/forms';
 import { AuthService } from '@auth0/auth0-angular';
 import { ActivatedRoute, Router} from '@angular/router';
+import { InsightService } from './insight.service';
 
 
 @Component({
@@ -13,7 +14,7 @@ import { ActivatedRoute, Router} from '@angular/router';
 
 export class StockComponent {
   
-  constructor(public webService: WebService, private formBuilder: FormBuilder, public authService: AuthService, private route: ActivatedRoute, private router : Router) {}
+  constructor(public webService: WebService, private formBuilder: FormBuilder, public authService: AuthService, private route: ActivatedRoute, private router : Router, private insight: InsightService) {}
 
   page : number = 1
   editForm: any;
@@ -21,6 +22,11 @@ export class StockComponent {
   isStock : boolean = false
 
   async ngOnInit() {
+    this.insight.logPageView("Stock Page Viewed"); 
+
+    this.insight.logEvent("Stock Page Loaded ");
+
+
     this.webService.getOneStockLocation(this.route.snapshot.params['id']).subscribe((result : any) => {
       this.location = result
     });

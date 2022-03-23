@@ -106,7 +106,7 @@ def delete_location(id):
 @app.route("/api/v1.0/location/<string:id>/stock", methods=["POST"])
 def add_new_stock(id):
     if "name" in request.form and "quantity" in request.form and "desc" in request.form:
-        new_stock = {"_id" : ObjectId(), "name" : request.form["name"], "quantity" : request.form["quantity"], "desc" : request.form["quantity"] }
+        new_stock = {"_id" : ObjectId(), "name" : request.form["name"], "quantity" : request.form["quantity"], "desc" : request.form["desc"] }
         stockCol.update_one( { "_id" : ObjectId(id) }, { "$push": { "stock" : new_stock } } )
         new_stock_link = "http://localhost:5000/api/v1.0/location/" + id + "/" + str(new_stock['_id'])
         return make_response( jsonify( { "url" : new_stock_link } ), 201 )
