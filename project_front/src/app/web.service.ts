@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
 
+
 @Injectable()
 export class WebService {
  constructor(public http: HttpClient) {}
@@ -10,17 +11,17 @@ export class WebService {
 
  getStockLoactions() {
   return this.http.get(
-    'http://localhost:5000/api/v1.0/location');
+    encodeURI('http://localhost:5000/api/v1.0/location'));
   }
 
   getOneStockLocation(id: any) {
     return this.http.get(
-      'http://localhost:5000/api/v1.0/location/' + id);
+      encodeURI('http://localhost:5000/api/v1.0/location/' + id));
   }
 
   getStock(id: any) {
     return this.http.get(
-    'http://localhost:5000/api/v1.0/location/' + id + '/stock');
+    encodeURI('http://localhost:5000/api/v1.0/location/' + id + '/stock'));
     }
 
     postLocation(location: any) {
@@ -33,7 +34,7 @@ export class WebService {
       
       
       return this.http.post(
-        'http://localhost:5000/api/v1.0/location', postData);
+        encodeURI('http://localhost:5000/api/v1.0/location'), postData);
       
       }
 
@@ -47,18 +48,18 @@ export class WebService {
       
       
       return this.http.put(
-        'http://localhost:5000/api/v1.0/location/' + id, postData);
+        encodeURI('http://localhost:5000/api/v1.0/location/' + id), postData);
       
       }
 
   deleteLocation(id: any) {
     return this.http.delete(
-      'http://localhost:5000/api/v1.0/location/' + id);
+      encodeURI('http://localhost:5000/api/v1.0/location/' + id));
     }
 
     deleteStock(lid: any, sid: any) {
       return this.http.delete(
-        'http://localhost:5000/api/v1.0/location/' + lid + '/stock/' + sid);
+        encodeURI('http://localhost:5000/api/v1.0/location/' + lid + '/stock/' + sid));
       }
 
       postStock(stock: any, id: any) {
@@ -70,7 +71,7 @@ export class WebService {
         postData.append("desc", stock.desc);
         
         return this.http.post(
-          'http://localhost:5000/api/v1.0/location/' + id + '/stock', postData);
+          encodeURI('http://localhost:5000/api/v1.0/location/' + id + '/stock'), postData);
         
         }
     
