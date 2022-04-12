@@ -12,6 +12,7 @@ import { NavComponent } from './nav.component';
 import { LocationComponent } from './location.component';
 import {NgxPaginationModule} from 'ngx-pagination';
 import { StockComponent } from './stock.component';
+import { StockDetailsComponent } from './stockdetails.component';
 import { InsightService } from './insight.service';
 import { AuthGuard } from '@auth0/auth0-angular';
 
@@ -34,12 +35,17 @@ var routes: any = [
     path : 'location/:id',
     component: StockComponent
     , canActivate: [AuthGuard]
-  } 
+  },
+  {
+    path : 'stockdetails',
+    component: StockDetailsComponent, 
+    canActivate: [AuthGuard]
+  }
 ];
 
 @NgModule({
   declarations: [
-    AppComponent, HomeComponent, NavComponent, LocationComponent, StockComponent
+    AppComponent, HomeComponent, NavComponent, LocationComponent, StockComponent, StockDetailsComponent
   ],
   imports: [
     BrowserModule, HttpClientModule, RouterModule.forRoot(routes), ReactiveFormsModule, NgxPaginationModule,
@@ -47,7 +53,7 @@ var routes: any = [
       domain:'dev-7zcg37ii.us.auth0.com',
       audience: 'https://project_api/',
       clientId: 'BpdTa5sipFOojHYNJr9QzElCfRHO3BxM',
-      httpInterceptor: { allowedList: ['http://localhost:5000/api/v1.0/*'],
+      httpInterceptor: { allowedList: ['http://localhost:5000/api/v1.0/*', 'https://stockprojectapi.azurewebsites.net/api/v1.0/*'],
     },
       }),
   ],

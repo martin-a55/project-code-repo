@@ -7,21 +7,24 @@ import { Injectable } from '@angular/core';
 export class WebService {
  constructor(public http: HttpClient) {}
 
+ //host = 'https://stockprojectapi.azurewebsites.net'; 
+ host =  'http://localhost:5000'; 
+
  
 
  getStockLoactions() {
   return this.http.get(
-    encodeURI('http://localhost:5000/api/v1.0/location'));
+    encodeURI( this.host + '/api/v1.0/location'));
   }
 
   getOneStockLocation(id: any) {
     return this.http.get(
-      encodeURI('http://localhost:5000/api/v1.0/location/' + id));
+      encodeURI(this.host + '/api/v1.0/location/' + id));
   }
 
   getStock(id: any) {
     return this.http.get(
-    encodeURI('http://localhost:5000/api/v1.0/location/' + id + '/stock'));
+    encodeURI(this.host + '/api/v1.0/location/' + id + '/stock'));
     }
 
     postLocation(location: any) {
@@ -34,7 +37,7 @@ export class WebService {
       
       
       return this.http.post(
-        encodeURI('http://localhost:5000/api/v1.0/location'), postData);
+        encodeURI(this.host + '/api/v1.0/location'), postData);
       
       }
 
@@ -48,31 +51,35 @@ export class WebService {
       
       
       return this.http.put(
-        encodeURI('http://localhost:5000/api/v1.0/location/' + id), postData);
+        encodeURI(this.host + '/api/v1.0/location/' + id), postData);
       
       }
 
   deleteLocation(id: any) {
     return this.http.delete(
-      encodeURI('http://localhost:5000/api/v1.0/location/' + id));
+      encodeURI(this.host + '/api/v1.0/location/' + id));
     }
 
     deleteStock(lid: any, sid: any) {
       return this.http.delete(
-        encodeURI('http://localhost:5000/api/v1.0/location/' + lid + '/stock/' + sid));
+        encodeURI(this.host + '/api/v1.0/location/' + lid + '/stock/' + sid));
       }
 
-      postStock(stock: any, id: any) {
-        let postData = new FormData();
-        console.log(stock.desc);
+    postStock(stock: any, id: any) {
+      let postData = new FormData();
+      
         
-        postData.append("name", stock.name);
-        postData.append("quantity", stock.qty);
-        postData.append("desc", stock.desc);
+      postData.append("details", stock.details);
+      postData.append("quantity", stock.qty);
         
-        return this.http.post(
-          encodeURI('http://localhost:5000/api/v1.0/location/' + id + '/stock'), postData);
+      return this.http.post(
+        encodeURI(this.host + '/api/v1.0/location/' + id + '/stock'), postData);
         
+       }
+
+      getStockDetails() {
+          return this.http.get(
+            encodeURI( this.host + '/api/v1.0/details'));
         }
     
 }

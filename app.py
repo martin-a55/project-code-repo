@@ -5,6 +5,8 @@ import math
 import qrcode
 from azure.storage.blob import BlockBlobService
 from azure.storage.blob.baseblobservice import BaseBlobService
+from azure.storage.blob.models import BlobProperties
+
 from pymongo import MongoClient
 import os
 
@@ -17,13 +19,17 @@ from urllib.request import urlopen
 app = Flask(__name__)
 CORS(app)
 
+qr_url = "http://localhost:4200"
+
 blob = BlockBlobService("projectqrstore", "sW3gcdD1a/JOkFYmdYhyV7tvPBCfOoW/laR0zLQJPH1vXTjHa5m/XWh6XLUUvXLv3FYq6oVKLcTbzoiILyYhHw==")
 blobDelete = BaseBlobService("projectqrstore", "sW3gcdD1a/JOkFYmdYhyV7tvPBCfOoW/laR0zLQJPH1vXTjHa5m/XWh6XLUUvXLv3FYq6oVKLcTbzoiILyYhHw==")
+
 
 client_connection_string = "mongodb://stockmongodb:RyuylNx9GESyqqV2j6aC0NHeWVJ5gdywQZEMwiomWF4MCXsqbqiOQNjuFamXny2GaYVOBj9znHRqBN0D9Ld3lg==@stockmongodb.mongo.cosmos.azure.com:10255/?ssl=true&retrywrites=false&replicaSet=globaldb&maxIdleTimeMS=120000&appName=@stockmongodb@"
 client = MongoClient(client_connection_string)
 stockDB = client["StockDatabase"]
 stockCol = stockDB["StockCollection"]
+detailsCol = stockDB["DetailsCollection"]
 
 #Authorisation Code got from https://auth0.com/blog/using-python-flask-and-angular-to-build-modern-web-apps-part-2/
 #Auth0 Code start
@@ -134,9 +140,9 @@ def handle_auth_error(ex):
     response = jsonify(ex.error)
     response.status_code = ex.status_code
     return response
-
 #Auth0 code finsih
 
+#API endpoint for getting all stock locations
 @app.route("/api/v1.0/location", methods=["GET"])
 @requires_auth
 def get_all_stock_locations():
@@ -148,6 +154,7 @@ def get_all_stock_locations():
         all_stock_locations.append(location)
     return make_response( jsonify(all_stock_locations), 200 )
 
+#API endpoint for getting one stock location
 @app.route("/api/v1.0/location/<string:id>", methods=["GET"])
 @requires_auth
 def get_one_stock_location(id):
@@ -162,6 +169,7 @@ def get_one_stock_location(id):
     else:
         return make_response(jsonify( {"error": "Invalid Stock Location ID, check your location exists and try again"}), 404)
 
+#API endpoint for getting adding a new stock location
 @app.route("/api/v1.0/location", methods=["POST"])
 @requires_auth
 def add_location():
@@ -194,7 +202,7 @@ def add_location():
     else:
         return make_response( jsonify( {"error":"Missing form data"} ), 404)
 
-
+#API endpoint for editing a stock location
 @app.route("/api/v1.0/location/<string:id>", methods=["PUT"])
 @requires_auth
 def edit_location(id):
@@ -229,8 +237,8 @@ def delete_location(id):
 @app.route("/api/v1.0/location/<string:id>/stock", methods=["POST"])
 @requires_auth
 def add_new_stock(id):
-    if "name" in request.form and "quantity" in request.form and "desc" in request.form:
-        new_stock = {"_id" : ObjectId(), "name" : request.form["name"], "quantity" : request.form["quantity"], "desc" : request.form["desc"] }
+    if "details" in request.form and "quantity" in request.form:
+        new_stock = { "_id" : ObjectId(), "details" : request.form["details"], "quantity" : request.form["quantity"] }
         stockCol.update_one( { "_id" : ObjectId(id) }, { "$push": { "stock" : new_stock } } )
         new_stock_link = "http://localhost:5000/api/v1.0/location/" + id + "/" + str(new_stock['_id'])
         return make_response( jsonify( { "url" : new_stock_link } ), 201 )
@@ -244,8 +252,15 @@ def get_all_stock(id):
     location = stockCol.find_one( { "_id" : ObjectId(id) }, { "stock" : 1, "_id" : 0 } )
     if location is not None:
         for stock in location["stock"]:
-            stock["_id"] = str(stock["_id"])
-            stock_at_location.append(stock)
+            details = detailsCol.find_one({'_id': ObjectId(stock['details'])})
+            new_stock = {
+                "_id": str(stock["_id"]),
+                "details": stock['details'],
+                "name": details['name'],
+                "quantity": stock['quantity'],
+                "desc": details['desc']
+            }
+            stock_at_location.append(new_stock)
         return make_response( jsonify( stock_at_location ), 200 )
     else:
         return make_response(jsonify( { "error": "Invalid Stock Location ID, check your location exists and try again" }), 404)
@@ -259,13 +274,21 @@ def get_stock(lid, sid):
     for stock in location['stock']:
         stock['_id'] = str(stock['_id'])
         if stock['_id'] == str(sid):
-            return make_response( jsonify( stock ), 200)
+            details = detailsCol.find_one({'_id': ObjectId(stock['details'])})
+            new_stock = {
+                        "_id" : lid,
+                        "details" : stock['details'],
+                        "name": details['name'],
+                        "quantity": stock['quantity'],
+                        "desc": details['desc']
+                        }
+            return make_response( jsonify( new_stock ), 200)
 
 @app.route("/api/v1.0/location/<lid>/stock/<sid>", methods=["PUT"])
 @requires_auth
 def edit_stock(lid, sid):
-    if "name" in request.form and "quantity" in request.form and "desc" in request.form:
-        edited_stock = {"stock.$.name" : request.form["name"],"stock.$.quantity" : request.form["quantity"], "stock.$.desc" : request.form["desc"],}
+    if "details" in request.form and "quantity" in request.form:
+        edited_stock = {"stock.$.details" : request.form["details"], "stock.$.quantity" : request.form["quantity"]}
         result = stockCol.update_one( { "stock._id" : ObjectId(sid) }, { "$set" : edited_stock } )
         edit_comment_url = "http://localhost:5000/api/v1.0/location/" + lid + "/stock/" + lid
         if result.matched_count == 1:
@@ -284,9 +307,89 @@ def delete_stock(lid, sid):
     else:
         return make_response(jsonify({ "error": "Invalid Stock Location or Stock ID, check your location and stock exist and try again" }), 404)
 
+@app.route("/api/v1.0/details", methods=["GET"])
+def get_all_stock_details():
+    all_stock_details = []
+    for stock_details in detailsCol.find():
+        stock_details['_id'] = str(stock_details['_id'])
+        all_stock_details.append(stock_details)
+    return make_response( jsonify(all_stock_details), 200 )
+
+@app.route("/api/v1.0/details/<string:id>", methods=["GET"])
+def get_one_stock_details(id):
+    details = detailsCol.find_one({'_id': ObjectId(id)})
+    if details is not None:
+        details['_id'] = str(details['_id'])
+        return make_response(jsonify(details), 200)
+    else:
+        return make_response(jsonify( {"error": "Invalid Stock Detail ID, check your details exists and try again"}), 404)
+
+@app.route("/api/v1.0/details", methods=["POST"])
+def add_details():
+    if "name" in request.form and "desc" in request.form and "reorder" in request.form and "img" in request.files:
+
+        new_details = { "name" : request.form["name"],
+                        "desc" : request.form["desc"],
+                        "reorder": request.form["reorder"],
+                         }
+        new_details_id = detailsCol.insert_one(new_details)
+        new_id = str(new_details_id.inserted_id)
+
+        qr_path = create_qr(new_id)
+
+        blob.create_blob_from_path("qrimagestore", new_id + ".png", qr_path)
+
+
+
+        if request.files["img"].content_type != None:
+            blob.create_blob_from_stream("stockimagestore", new_id + ".png", request.files["img"])
+        else:
+            blob.create_blob_from_path("stockimagestore", new_id + ".png", "./placeholder.png")
+
+        new_location_link = "http://localhost:5000/api/v1.0/details/" + new_id
+        new_qr_link = "https://projectqrstore.blob.core.windows.net/qrimagestore/" + new_id + ".png"
+        new_img_link = "https://projectqrstore.blob.core.windows.net/stockimagestore/" + new_id + ".png"
+
+        os.remove(new_id + ".png")
+
+        respone = []
+        respone.append({ "url" : new_location_link})
+        respone.append({ "qr" : new_qr_link})
+        respone.append({ "img" : new_img_link})
+        return make_response( jsonify( respone ), 201)
+    else:
+        return make_response( jsonify( {"error":"Missing form data"} ), 404)
+
+@app.route("/api/v1.0/details/<string:id>", methods=["PUT"])
+def edit_details(id):
+    if "name" in request.form and "desc" in request.form and "reorder" in request.form and "img" in request.files:
+        update_details = detailsCol.update_one( { "_id" : ObjectId(id) },
+                                        { "$set" : { "name" : request.form["name"],
+                                                    "desc" : request.form["desc"],
+                                                    "reorder": request.form["reorder"],
+                                        } } )
+        if update_details.matched_count == 1:
+            if request.files["img"].content_type != None:
+                blob.create_blob_from_stream("stockimagestore", id + ".png", request.files["img"])
+            edited_details_link = "http://localhost:5000/api/v1.0/details/" + id
+            return make_response( jsonify( { "url":edited_details_link } ), 200)
+        else:
+            return make_response( jsonify( { "error": "Invalid Stock Details ID, check your Details exists and try again" } ), 404)
+    else:
+        return make_response( jsonify( { "error" : "Missing form data" } ), 404)
+
+@app.route("/api/v1.0/details/<string:id>", methods=["DELETE"])
+def delete_details(id):
+    result = detailsCol.delete_one( { "_id" : ObjectId(id) } )
+    if result.deleted_count == 1:
+        blobDelete.delete_blob("qrimagestore", id + ".png")
+        blobDelete.delete_blob("stockimagestore", id + ".png")
+        return make_response( jsonify( {} ), 204)
+    else:
+        return make_response( jsonify( {"error": "Invalid Stock Details ID, check your location exists and try again"} ), 404)
 
 def create_qr(id):
-    input_data = "http://localhost:4200/location/" + id
+    input_data = qr_url + "/location/" + id
     qr = qrcode.QRCode(version=1, box_size=10, border=5)
     qr.add_data(input_data)
     qr.make(fit=True)
@@ -294,8 +397,6 @@ def create_qr(id):
     image_name = id + ".png"
     img.save(image_name)
     return "./" + image_name
-
-
 
 if __name__ == "__main__":
     app.run(debug=True)
