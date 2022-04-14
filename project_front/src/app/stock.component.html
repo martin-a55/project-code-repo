@@ -102,9 +102,10 @@
                     </div>
                         
                     
-                
+            
             </div> 
             <div *ngIf="isStock">
+              <ng-container *ngIf = "toggleStockEdit; else editStockFormView">
             <div class="row">
                 <table class="table table-sm">
                 <thead>
@@ -119,15 +120,67 @@
                     <th scope="row">{{stock.name}}</th>
                     <td>{{stock.quantity}}</td>
                     <td>{{stock.desc}}</td>
+                    <td><button class="btn btn-primary" [routerLink]="['/stockdetails', stock.details]">Get Stock Details</button></td>
                     <td><button class="btn btn-danger" (click)="OnDeleteStock(stock._id)">Delete</button></td>
                   </tr>
                 </tbody>
               </table>
             </div>
-          
+            <div class="row">
+              <div class="col-4"><button class="btn btn-primary" (click)="onToggleStockEdit()">Edit</button></div>
+            </div>
             <div class="row">
                 <pagination-controls (pageChange)="page = $event"></pagination-controls>
             </div>
+          </ng-container>
+
+            <ng-template #editStockFormView>
+              <div class="row">
+                <div class="col-2"><strong>Stock Name</strong></div>
+                <div class="col-2"><strong>Quantity</strong></div>
+                <div class="col-2"><strong>Description</strong></div>
+              </div>
+              <div class="row">
+                <hr style="border: 1px solid black;">
+              </div>
+              
+                 
+                <div  *ngFor="let stock of stock_list | paginate: { itemsPerPage: 12, currentPage: page }; let i = index;">
+                      
+                      <form class="row" [formGroup]="getFormControl(i)" (ngSubmit)="OnEditStockSubmit(stock.location, stock._id, i)">
+                      <div class="col-2"><div class="col-8">
+                        <select id="details" name="details" class="form-control" formControlName="details" class="form-select">
+                            <option *ngFor="let s_details of stock_details" [value]="s_details._id">{{s_details.name}}</option>
+                       </select>
+                      </div></div>
+                      <div class="col-2">
+                      <div class="col-6"><div class="form-group"> 
+                        <input id="qty" name="qty"
+                            class="form-control" 
+                            formControlName="qty"
+                            type="text">
+                      </div></div></div>
+                      <div class="col-3">{{stock.desc}}</div>
+                      
+                      <div class="col-4"><button  type="submit" class="btn btn-primary">Submit</button> </div>
+                      &nbsp;
+                      <hr>
+                      </form>
+                    
+                </div>
+                <div class="row">
+                    <div class="col-4"><button class="btn btn-primary" (click)="onToggleStockEdit()">Edit</button></div>
+                </div>
+              <div class="row">
+                  <pagination-controls (pageChange)="page = $event"></pagination-controls>
+              </div>
+            </ng-template>
+
+            
+          </div>
+
+
+            
           </div>
             <form  [formGroup]="stockForm"  (ngSubmit)="OnStockSubmit()">
             <div class="row">
@@ -136,7 +189,7 @@
             <div class="row">
                   <div class="col-4"><label for="details">Details:</label>
                   <select id="details" name="details" class="form-control" formControlName="details" class="form-select">
-                      <option *ngFor="let s_details of stock_details | async" [value]="s_details._id">{{s_details.name}}</option>
+                      <option selected="selected" *ngFor="let s_details of stock_details" [value]="s_details._id">{{s_details.name}}</option>
                  </select>
                 </div>
                

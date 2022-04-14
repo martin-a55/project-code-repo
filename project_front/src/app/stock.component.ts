@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { WebService } from './web.service';
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormArray, FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { AuthService } from '@auth0/auth0-angular';
 import { ActivatedRoute, Router} from '@angular/router';
 import { InsightService } from './insight.service';
@@ -19,7 +19,8 @@ export class StockComponent {
   page : number = 1
   editForm: any;
   stockForm : any;
-  isStock : boolean = false
+  isStock : boolean = false;
+  arrayForm: any; 
 
   async ngOnInit() {
     this.insight.logPageView("Stock Page Viewed"); 
@@ -31,7 +32,9 @@ export class StockComponent {
       this.location = result
     });
     
-    this.stock_details = this.webService.getStockDetails(); 
+     this.webService.getStockDetails().subscribe((result: any) => {
+      this.stock_details = result; 
+    }); 
 
     this.RefreshStock();
 
@@ -47,6 +50,10 @@ export class StockComponent {
       details: '',
       qty: ''
     });
+
+    this.arrayForm = this.formBuilder.group({
+      stock: this.formBuilder.array([])
+  })
   }
 
   
@@ -99,9 +106,19 @@ export class StockComponent {
 
   RefreshStock(){
     this.webService.getStock(this.route.snapshot.params['id']).subscribe((result : any) => {
-      this.stock_list = result;  
+      this.stock_list = result; 
+      this.toggleStockEdit = true;
       if(this.stock_list.length != 0){
           this.isStock = true;
+          this.ClearFormArray(this.stockEdit); 
+          this.stock_list.forEach((stock : any) => {
+            var stockEditForm = this.formBuilder.group({
+              details: stock["details"],
+              qty: stock['quantity']
+            });
+            this.stockEdit.push(stockEditForm);
+          }); 
+          
       }
       else{
         this.isStock = false;
@@ -109,9 +126,49 @@ export class StockComponent {
     });
   }
 
+  get stockEdit() {
+    return this.arrayForm.controls["stock"] as FormArray;
+  }
+
+  addStockForm() {
+    const stockEditForm = this.formBuilder.group({
+        quantity: ['']
+    });
+  
+    this.stockEdit.push(stockEditForm);
+  }
+
+  getFormControl(id: any){
+    return this.stockEdit.at(id) as FormGroup; 
+  }
+
+  onToggleStockEdit(){
+    if(this.toggleStockEdit){
+      this.toggleStockEdit = false 
+    }
+    else{
+      this.toggleStockEdit = true
+    }
+  }
+
+  OnEditStockSubmit(lid: any, sid: any, id: any){
+    this.webService.updateStock(this.getFormControl(id).value, lid, sid)
+    .subscribe((respones: any ) => {
+        this.RefreshStock();
+    });
+    
+  }
+
+  ClearFormArray(array: FormArray){
+    while (array.length != 0) {
+      array.removeAt(0)
+    }
+  }
+
   
 
   toggleEdit: boolean = true;
+  toggleStockEdit: boolean = true; 
   location : any;  
   stock_list : any = [];
   stock_details : any = [];

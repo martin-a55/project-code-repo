@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { WebService } from './web.service';
-import { FormArray, FormBuilder, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '@auth0/auth0-angular';
 import { ActivatedRoute, Router} from '@angular/router';
 import { InsightService } from './insight.service';
@@ -32,17 +32,9 @@ export class StockDetailComponent {
     this.webService.getOneStockDetails(this.route.snapshot.params['id']).subscribe((result : any) => {
       this.details = result
     });
-    
-    this.stock_details = this.webService.getStockDetails(); 
 
     this.RefreshStock();
-
-    this.editForm = this.formBuilder.group({
-      name: '',
-      desc: '',
-      reorder: '',
-      img: new File([""], "noimg"),
-    });
+    this.RefreshDetails(); 
 
     this.editForm = this.formBuilder.group({
       name: '',
@@ -79,13 +71,13 @@ arrayForm = this.formBuilder.group({
   OnEditSubmit(){
     this.webService.updateDetails(this.editForm.value, this.route.snapshot.params['id'])
     .subscribe((respones: any ) => {
-      
       this.webService.getOneStockDetails(this.route.snapshot.params['id']).subscribe((result : any) => {
         this.details = result
         this.toggleEdit = true
         this.editForm.patchValue({
           img: new File([""], "")
         });
+        this.RefreshStock(); 
       });
     });
     
@@ -116,20 +108,30 @@ arrayForm = this.formBuilder.group({
   RefreshStock(){
     this.webService.getStockByDetails(this.route.snapshot.params['id']).subscribe((result : any) => {
       this.stock_list = result; 
-      this.stock_list.forEach((stock : any) => {
-        const stockEditForm = this.formBuilder.group({
-          details: stock["details"],
-          quantity: stock['qty']
-        });
-        this.stockEdit.push(stockEditForm);
-      }); 
+      this.toggleStockEdit = true;
+      this.RefreshDetails();
       if(this.stock_list.length != 0){
           this.isStock = true;
+          this.ClearFormArray(this.stockEdit); 
+          this.stock_list.forEach((stock : any) => {
+            var stockEditForm = this.formBuilder.group({
+              details: stock["details"],
+              qty: stock['quantity']
+            });
+            this.stockEdit.push(stockEditForm);
+          }); 
+          
       }
       else{
         this.isStock = false;
       }
     });
+  }
+
+  RefreshDetails(){
+    this.webService.getStockDetails().subscribe((result : any) => {
+      this.stock_details = result; 
+      });
   }
 
   onFileChange(event : any) {
@@ -182,18 +184,40 @@ arrayForm = this.formBuilder.group({
     this.stockEdit.push(stockEditForm);
   }
 
-  deleteStockForm(id: any) {
-    this.stockEdit.removeAt(id);
-}
+  getFormControl(id: any){
+    return this.stockEdit.at(id) as FormGroup; 
+  }
 
-  getFromControl(id: any){
-    return this.stockEdit.at(id); 
+  onToggleStockEdit(){
+    if(this.toggleStockEdit){
+      this.toggleStockEdit = false 
+    }
+    else{
+      this.toggleStockEdit = true
+    }
+  }
+
+  OnEditStockSubmit(lid: any, sid: any, id: any){
+    this.webService.updateStock(this.getFormControl(id).value, lid, sid)
+    .subscribe((respones: any ) => {
+        this.RefreshStock();
+    });
+    
+  }
+
+  ClearFormArray(array: FormArray){
+    while (array.length != 0) {
+      array.removeAt(0)
+    }
   }
   
 
   toggleEdit: boolean = true;
+  toggleStockEdit: boolean = true; 
   details : any;  
   stock_list : any = [];
   stock_details : any = [];
+  
  }
 
+ 

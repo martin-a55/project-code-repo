@@ -121,4 +121,15 @@ export class WebService {
             return this.http.delete(
               encodeURI(this.host + '/api/v1.0/details/' + id));
             }
+
+        updateStock(stock: any, lid: any, sid: any) {
+            let postData = new FormData();
+              
+            postData.append("details", stock.details);
+            postData.append("quantity", stock.qty);
+                
+            return this.http.put(
+            encodeURI(this.host + '/api/v1.0/location/' + lid + '/stock/' + sid), postData);
+                
+        }
 }
