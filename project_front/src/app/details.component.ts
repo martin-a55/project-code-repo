@@ -7,12 +7,12 @@ import { InsightService } from './insight.service';
 
 
 @Component({
- selector: 'stock',
- templateUrl: './stock.component.html',
- styleUrls: ['./stock.component.css']
+ selector: 'stockdetail',
+ templateUrl: './stockdetail.component.html',
+ styleUrls: ['./stockdetail.component.css']
 })
 
-export class StockComponent {
+export class StockDetailComponent {
   
   constructor(public webService: WebService, private formBuilder: FormBuilder, public authService: AuthService, private route: ActivatedRoute, private router : Router, private insight: InsightService) {}
 
@@ -27,13 +27,13 @@ export class StockComponent {
     this.insight.logEvent("Stock Page Loaded ");
 
 
-    this.webService.getOneStockLocation(this.route.snapshot.params['id']).subscribe((result : any) => {
+    this.webService.getOneStockDetails(this.route.snapshot.params['id']).subscribe((result : any) => {
       this.location = result
     });
     
     this.stock_details = this.webService.getStockDetails(); 
 
-    this.RefreshStock();
+    //this.RefreshStock();
 
     this.editForm = this.formBuilder.group({
       location: '',

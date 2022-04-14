@@ -1,0 +1,129 @@
+<div style="padding-top:70px; height: 100%;">
+    <div class="container">
+        <div class="row">
+                <div *ngIf= "details">
+                    <div class="card" style = "width: 40%; margin: auto">
+                        <img class = "card-img-top" [attr.src]="'https://projectqrstore.blob.core.windows.net/qrimagestore/' + details._id + '.png'" width="400">
+                        <div class="card-header">
+                            <div class="row">
+                                <div class="col-12"><button class="btn btn-primary" (click)="DownloadQR(details._id)">Download QR Code</button></div>
+                        </div>
+                        
+                        
+                      
+                      </div>
+                        <ng-container *ngIf = "toggleEdit; else editFormView">
+                        <div class="card-body" style="background-color: rgb(22, 75, 175); color: white;">
+                            <div class="row">
+                                <div class="col-6">Name: {{ details.name }}</div>
+                                <div class="col-6">Reoder: {{ details.reorder }}</div>
+                                </div>
+                        </div>
+                        <div class="card-footer" style="background-color: white;">
+                            <div class="col-12">Description: {{ details.desc }}</div>
+                            
+                        </div>
+                      </ng-container>
+                      <ng-template #editFormView>
+                        <form [formGroup]="editForm"(ngSubmit)="OnEditSubmit()">
+                        <div class="card-body" style="background-color: rgb(22, 75, 175); color: white;">
+                    
+                          <div class="row">
+                            <div class="col-3"><label for="name">Name:</label></div>
+                             <div class="col-3"> <div class="form-group"> 
+                              
+                                    <input id="name" name="name"
+                                        class="form-control" 
+                                        formControlName="name"
+                                        type="text"
+                                        [ngModel]="details.name">
+                            </div></div>
+                              <div class="col-3"><label for="reorder">Reorder:</label></div>
+                              <div class="col-3"><div class="form-group"> 
+                              
+                                <input id="reorder" name="reorder"
+                                    class="form-control" 
+                                    formControlName="reorder"
+                                    type="text"
+                                    [ngModel]="details.reorder">
+                        </div></div>
+                              </div>
+                            
+                      </div>
+                      <div class="card-footer" style="background-color: white;">
+                        
+                        <div class="row">
+                          <div class="col-3"><label for="desc">Description:</label></div>
+                          <div class="col-9"><div class="form-group"> 
+                              
+                            <textarea id="desc" name="rack"
+                                class="form-control" 
+                                formControlName="desc"
+                                type="text"
+                                [ngModel]="details.desc"></textarea>
+                    </div></div>
+                        </div>
+                        <div class="row">
+                          <div><label for="desc"></label></div>
+                          <div class="form-group"> 
+                              
+                            <div class="col-12"><label for="img" class="form-label">New Image:</label>
+                              <input type="file" accept="image/*" class="form-control" id="img"
+                              
+                              (change)="onFileChange($event)"></div>
+                      
+                    </div>
+                        </div>
+                        &nbsp;
+                        <div class="row">
+                          <div class="col-3">
+                          <button  type="submit" class="btn btn-primary">Submit</button> 
+                        </div>
+                        </div>
+                      </div>
+                    </form>
+                      </ng-template>
+                      <div class="card-footer" style="background-color: white;">
+                        <div class="row">
+                          <div class="col-4"><button class="btn btn-primary" (click)="onToggleEdit()">Edit</button></div>
+                          <div class="col-4" >
+                            
+                          </div>
+                          <div class="col-4"><button class="btn btn-danger" (click)="OnDeleteDetails()">Delete</button></div>
+                      </div>
+                    </div>
+                        
+                    
+                
+            </div> 
+            <div *ngIf="isStock">
+            <div class="row">
+                <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Stock Name</th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let stock of stock_list | paginate: { itemsPerPage: 12, currentPage: page }; let i = index;">
+                    <th scope="row">{{details.name}}</th>
+                    <td>{{stock.quantity}}</td>
+                    <td>{{details.desc}}</td>
+                    <td><form [formGroup]="{{getFromControl(i)}}"(ngSubmit)="OnEditSubmit()"></form></td>
+                    <td><button class="btn btn-danger" (click)="OnDeleteStock(stock.location ,stock._id)">Delete</button></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          
+            <div class="row">
+                <pagination-controls (pageChange)="page = $event"></pagination-controls>
+            </div>
+          </div>
+        
+        </div>
+        
+</div>
+        

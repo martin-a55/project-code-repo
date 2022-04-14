@@ -81,5 +81,44 @@ export class WebService {
           return this.http.get(
             encodeURI( this.host + '/api/v1.0/details'));
         }
+
+        postDetails(details: any) {
+          let postData = new FormData();
+          postData.append("name", details.name);
+          postData.append("desc", details.desc);
+          postData.append("reorder", details.reorder);
+          postData.append("img", details.img);
+          
+          return this.http.post(
+            encodeURI(this.host + '/api/v1.0/details'), postData);
+          
+          }
+
+          updateDetails(details: any, id: any) {
+            let postData = new FormData();
+             postData.append("name", details.name);
+          postData.append("desc", details.desc);
+          postData.append("reorder", details.reorder);
+          postData.append("img", details.img);
+            
+            
+            return this.http.put(
+              encodeURI(this.host + '/api/v1.0/details/' + id), postData);
+            
+            }
+
+          getOneStockDetails(id: any) {
+            return this.http.get(
+              encodeURI(this.host + '/api/v1.0/details/' + id));
+          }
+
+          getStockByDetails(id: any) {
+            return this.http.get(
+              encodeURI(this.host + '/api/v1.0/details/' + id + '/stock'));
+          }
     
+          deleteDetails(id: any) {
+            return this.http.delete(
+              encodeURI(this.host + '/api/v1.0/details/' + id));
+            }
 }

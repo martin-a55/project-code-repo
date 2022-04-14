@@ -3,7 +3,7 @@
         <div class="row">
                 <div *ngIf= "location">
                     <div class="card" style = "width: 40%; margin: auto">
-                        <img class = "card-img-top" [attr.src]="'https://projectqrstore.blob.core.windows.net/qrimagestore/' + location._id + '.png'" width="400">
+                        <img class = "card-img-top" [attr.src]="'https://projectqrstore.blob.core.windows.net/qrimagestore/' + location._id + '.png'" width="400" alt="A QR code for the assosiated stock location entry">
                         <div class="card-header">
                             <div class="row">
                                 <div class="col-12"><button class="btn btn-primary" (click)="DownloadQR(location._id)">Download QR Code</button></div>
@@ -135,8 +135,8 @@
             </div>
             <div class="row">
                   <div class="col-4"><label for="details">Details:</label>
-                  <select id="details" name="details" class="form-control" formControlName="details" class="form-select" *ngFor="let s_details of stock_details | async">
-                      <option [value]="s_details._id">{{s_details.name}}</option>
+                  <select id="details" name="details" class="form-control" formControlName="details" class="form-select">
+                      <option *ngFor="let s_details of stock_details | async" [value]="s_details._id">{{s_details.name}}</option>
                  </select>
                 </div>
                

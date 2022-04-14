@@ -341,7 +341,7 @@ def add_details():
 
 
 
-        if request.files["img"].content_type != None:
+        if "image/" in request.files["img"].content_type:
             blob.create_blob_from_stream("stockimagestore", new_id + ".png", request.files["img"])
         else:
             blob.create_blob_from_path("stockimagestore", new_id + ".png", "./placeholder.png")
@@ -369,7 +369,7 @@ def edit_details(id):
                                                     "reorder": request.form["reorder"],
                                         } } )
         if update_details.matched_count == 1:
-            if request.files["img"].content_type != None:
+            if "image/" in request.files["img"].content_type:
                 blob.create_blob_from_stream("stockimagestore", id + ".png", request.files["img"])
             edited_details_link = "http://localhost:5000/api/v1.0/details/" + id
             return make_response( jsonify( { "url":edited_details_link } ), 200)
@@ -384,9 +384,33 @@ def delete_details(id):
     if result.deleted_count == 1:
         blobDelete.delete_blob("qrimagestore", id + ".png")
         blobDelete.delete_blob("stockimagestore", id + ".png")
+        for location in stockCol.find():
+            location['_id'] = str(location['_id'])
+            for stock in location["stock"]:
+                if stock["details"] == id:
+                    stock['_id'] = str(stock['_id'])
+                    stockCol.update_one( { "_id" : ObjectId(location['_id']) }, { "$pull" : { "stock" : { "details" : id  } } } )
         return make_response( jsonify( {} ), 204)
     else:
         return make_response( jsonify( {"error": "Invalid Stock Details ID, check your location exists and try again"} ), 404)
+
+@app.route("/api/v1.0/details/<string:id>/stock", methods=["GET"])
+def get_all_stock_by_details(id):
+    all_stock_details = []
+    for location in stockCol.find():
+        location['_id'] = str(location['_id'])
+        for stock in location["stock"]:
+            if stock["details"] == id:
+                stock['_id'] = str(stock['_id'])
+                new_stock = {
+                        "_id" : stock['_id'],
+                        "details" : stock['details'],
+                        "location" : location['_id'],
+                        "quantity": stock['quantity']
+                        }
+
+                all_stock_details.append(new_stock)
+    return make_response( jsonify(all_stock_details), 200 )
 
 def create_qr(id):
     input_data = qr_url + "/location/" + id
