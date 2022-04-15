@@ -37,7 +37,8 @@
                                         class="form-control" 
                                         formControlName="location"
                                         type="text"
-                                        [ngModel]="location.location">
+                                        [ngModel]="location.location"
+                                        [ngClass]="{'error': isLocationInvalid('location')}">
                             </div></div>
                               <div class="col-3"><label for="location">Warehouse:</label></div>
                               <div class="col-3"><div class="form-group"> 
@@ -46,7 +47,8 @@
                                     class="form-control" 
                                     formControlName="warehouse"
                                     type="text"
-                                    [ngModel]="location.warehouse">
+                                    [ngModel]="location.warehouse"
+                                    [ngClass]="{'error': isLocationInvalid('warehouse')}">
                         </div></div>
                               </div>
                             
@@ -61,7 +63,8 @@
                                 class="form-control" 
                                 formControlName="rack"
                                 type="text"
-                                [ngModel]="location.stock_rack">
+                                [ngModel]="location.stock_rack"
+                                [ngClass]="{'error': isLocationInvalid('rack')}">
                     </div></div>
                         </div>
                         <div class="row">
@@ -72,7 +75,8 @@
                                 class="form-control" 
                                 formControlName="row"
                                 type="text"
-                                [ngModel]="location.rack_row">
+                                [ngModel]="location.rack_row"
+                                [ngClass]="{'error': isLocationInvalid('row')}">
                     </div></div>
                         </div>
                         <div class="row">
@@ -83,11 +87,13 @@
                                 class="form-control" 
                                 formControlName="column"
                                 type="text"
-                                [ngModel]="location.rack_column">
+                                [ngModel]="location.rack_column"
+                                [ngClass]="{'error': isLocationInvalid('column')}">
                     </div></div>
                         </div>
-
-                          <button  type="submit" class="btn btn-primary">Submit</button> 
+                        <div class="col-3"> <span *ngIf="isLocationIncomplete()">You must complete all fields</span>
+                          <button *ngIf="!isLocationIncomplete()" type="submit"
+                              class="btn btn-primary">Submit</button></div>
                       </div>
                     </form>
                       </ng-template>

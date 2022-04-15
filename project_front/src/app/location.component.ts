@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { WebService } from './web.service';
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, RequiredValidator, Validators } from '@angular/forms';
 import { AuthService } from '@auth0/auth0-angular';
 import { InsightService } from './insight.service';
 
@@ -28,11 +28,11 @@ export class LocationComponent {
     });
 
     this.locationForm = this.formBuilder.group({
-      location: '',
-      warehouse: '',
-      rack: '',
-      row: '',
-      column: ''
+      location: ['', Validators.required],
+      warehouse: ['', Validators.required],
+      rack: ['', Validators.required],
+      row: ['', Validators.required],
+      column: ['', Validators.required]
     });
   }
 
@@ -50,6 +50,28 @@ export class LocationComponent {
       });
     });
   }
+
+  isLocationInvalid(control: any) {
+    return this.locationForm.controls[control].invalid &&
+            this.locationForm.controls[control].touched;
+   }
+
+  isLocationUntouched() {
+    return this.locationForm.controls.location.pristine ||
+            this.locationForm.controls.warehouse.pristine ||
+            this.locationForm.controls.rack.pristine ||
+            this.locationForm.controls.row.pristine ||
+            this.locationForm.controls.column.pristine;      
+  }
+
+    isLocationIncomplete() {
+      return this.isLocationInvalid('location') ||
+      this.isLocationInvalid('warehouse') ||
+      this.isLocationInvalid('rack') ||
+      this.isLocationInvalid('row') ||
+      this.isLocationInvalid('column') ||
+      this.isLocationUntouched(); 
+    }
 
  
   location_list : any = [];  

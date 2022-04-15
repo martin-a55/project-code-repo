@@ -185,7 +185,8 @@ arrayForm = this.formBuilder.group({
   }
 
   getFormControl(id: any){
-    return this.stockEdit.at(id) as FormGroup; 
+    var actual_id = (12 * (this.page -1)) + id;
+    return this.stockEdit.at(actual_id) as FormGroup; 
   }
 
   onToggleStockEdit(){

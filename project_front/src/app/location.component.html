@@ -37,6 +37,7 @@
                     <input id="location" name="location"
                         class="form-control" 
                         formControlName="location"
+                        [ngClass]="{'error': isLocationInvalid('location')}"
                         type="text">
                   </div></div>
                   <div class="col-1"><label for="warehouse">Warehouse:</label></div>
@@ -44,6 +45,7 @@
                     <input id="warehouse" name="warehouse"
                         class="form-control" 
                         formControlName="warehouse"
+                        [ngClass]="{'error': isLocationInvalid('warehouse')}"
                         type="text">
                   </div></div>
                 </div>
@@ -54,6 +56,7 @@
                       <input id="rack" name="rack"
                           class="form-control" 
                           formControlName="rack"
+                          [ngClass]="{'error': isLocationInvalid('rack')}"
                           type="text">
                     </div></div>
                     <div class="col-1"><label for="row">Row:</label></div>
@@ -61,6 +64,7 @@
                       <input id="row" name="row"
                           class="form-control" 
                           formControlName="row"
+                          [ngClass]="{'error': isLocationInvalid('row')}"
                           type="text">
                     </div></div>
                     <div class="col-1"><label for="column">Column:</label></div>
@@ -68,12 +72,15 @@
                       <input id="column" name="column"
                           class="form-control" 
                           formControlName="column"
+                          [ngClass]="{'error': isLocationInvalid('column')}"
                           type="text">
                     </div></div>
                 </div>
-            
+                <div class="row">&nbsp;</div>
                   <div class="row">
-                <div class="col-3"><button type="submit" class="btn btn-primary">Submit</button></div>
+                <div class="col-3"> <span *ngIf="isLocationIncomplete()">You must complete all fields</span>
+                    <button *ngIf="!isLocationIncomplete()" type="submit"
+                        class="btn btn-primary">Submit</button></div>
             </div>
             <div class="row">&nbsp;</div>
           </form>

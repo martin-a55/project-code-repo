@@ -39,11 +39,11 @@ export class StockComponent {
     this.RefreshStock();
 
     this.editForm = this.formBuilder.group({
-      location: '',
-      warehouse: '',
-      rack: '',
-      row: '',
-      column: ''
+      location: ['', Validators.required],
+      warehouse: ['', Validators.required],
+      rack: ['', Validators.required],
+      row: ['', Validators.required],
+      column: ['', Validators.required]
     });
 
     this.stockForm = this.formBuilder.group({
@@ -139,7 +139,8 @@ export class StockComponent {
   }
 
   getFormControl(id: any){
-    return this.stockEdit.at(id) as FormGroup; 
+    var actual_id = (12 * (this.page -1)) + id;   
+    return this.stockEdit.at(actual_id) as FormGroup; 
   }
 
   onToggleStockEdit(){
@@ -164,6 +165,36 @@ export class StockComponent {
       array.removeAt(0)
     }
   }
+
+  isLocationInvalid(control: any) {
+    return this.editForm.controls[control].invalid &&
+            this.editForm.controls[control].touched;
+   }
+
+  isLocationIncomplete() {
+      return this.isLocationInvalid('location') ||
+      this.isLocationInvalid('warehouse') ||
+      this.isLocationInvalid('rack') ||
+      this.isLocationInvalid('row') ||
+      this.isLocationInvalid('column')
+  }
+
+  isStockInvalid(control: any) {
+    return this.stockForm.controls[control].invalid &&
+            this.stockForm.controls[control].touched;
+   }
+
+  isStockUntouched() {
+    return this.stockForm.controls.location.pristine ||
+            this.stockForm.controls.warehouse.pristine;
+                  
+  }
+
+    isStockIncomplete() {
+      return this.isLocationInvalid('details') ||
+      this.isLocationInvalid('qty') ||
+      this.isStockUntouched(); 
+    }
 
   
 
