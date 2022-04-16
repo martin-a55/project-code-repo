@@ -1,7 +1,30 @@
 <div style="padding-top:70px; height: 100%;">
     
-    <div>{{deniedLoginMessage}}</div>
-    
+
+<ng-container *ngIf = "authService.isAuthenticated$ | async; else loggedOut">
+        
+
+</ng-container>
+<ng-template #loggedOut>
+        
+        <div class="card; col-6; "  style="background-color: white; margin-left: auto;
+        margin-right: auto;  margin-top: 5em;
+        width: 35em; height: 100px"  >
+            
+        <div class="card-header">
+            <h4 class="col-12">Welcome to Convayor Tek Stock Managment</h4>
+        </div>
+        <div class="card-body" style="background-color: #185c9b; color: white;">
+            <div class="row">
+                <div>{{deniedLoginMessage}}</div>
+                <button class="btn btn-outline-light" (click) = "authService.loginWithRedirect({ appState : { target : this.router.url }  })">Login or signup with Auth0</button>
+                
+                </div>
+        </div>
+        <div class="card-footer" style="background-color: #00adf1;"></div>
+</div>
+</ng-template>
+
    
 </div>
 

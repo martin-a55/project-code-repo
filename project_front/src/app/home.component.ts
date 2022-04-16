@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { AuthService } from '@auth0/auth0-angular';
 import { WebService } from './web.service';
 import { InsightService } from './insight.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 
 @Component({
@@ -12,7 +12,7 @@ import { ActivatedRoute } from '@angular/router';
 })
 
 export class HomeComponent {
-    constructor(public authService: AuthService, public webService: WebService, private insight: InsightService, private route: ActivatedRoute) {}
+    constructor(public authService: AuthService, public webService: WebService, private insight: InsightService, private route: ActivatedRoute, public router: Router) {}
 
     deniedLoginMessage: any = "";
 

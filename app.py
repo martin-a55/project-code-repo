@@ -419,6 +419,7 @@ def get_all_stock_by_details(id):
     return make_response( jsonify(all_stock_details), 200 )
 
 @app.route("/api/v1.0/stock/search", methods=["GET"])
+@requires_auth
 def search_stock():
     field, value = "", "";
 
