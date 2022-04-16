@@ -3,7 +3,7 @@
         <div class="row">
                 <div *ngIf= "location">
                     <div class="card" style = "width: 40%; margin: auto">
-                        <img class = "card-img-top" [attr.src]="'https://projectqrstore.blob.core.windows.net/qrimagestore/' + location._id + '.png'" width="400" alt="A QR code for the assosiated stock location entry">
+                        <img class = "card-img-top" [attr.src]="'https://projectqrstore.blob.core.windows.net/qrimagestore/' + location._id + '.png'" style="object-fit: contain; height: 100mm; padding:10px;" alt="A QR code for the assosiated stock location entry">
                         <div class="card-header">
                             <div class="row">
                                 <div class="col-12"><button class="btn btn-primary" (click)="DownloadQR(location._id)">Download QR Code</button></div>
@@ -13,7 +13,7 @@
                       
                       </div>
                         <ng-container *ngIf = "toggleEdit; else editFormView">
-                        <div class="card-body" style="background-color: rgb(22, 75, 175); color: white;">
+                        <div class="card-body" style="background-color: #185c9b; color: white;">
                             <div class="row">
                                 <div class="col-6">Location: {{ location.location }}</div>
                                 <div class="col-6">Warehouse: {{ location.warehouse }}</div>
@@ -27,7 +27,7 @@
                       </ng-container>
                       <ng-template #editFormView>
                         <form [formGroup]="editForm"(ngSubmit)="OnEditSubmit()">
-                        <div class="card-body" style="background-color: rgb(22, 75, 175); color: white;">
+                        <div class="card-body" style="background-color: #185c9b; color: white;">
                     
                           <div class="row">
                             <div class="col-3"><label for="location">Location:</label></div>
@@ -91,8 +91,9 @@
                                 [ngClass]="{'error': isLocationInvalid('column')}">
                     </div></div>
                         </div>
-                        <div class="col-3"> <span *ngIf="isLocationIncomplete()">You must complete all fields</span>
-                          <button *ngIf="!isLocationIncomplete()" type="submit"
+                        <div class="row">&nbsp;</div>
+                        <div > <span class="col-6"  *ngIf="isLocationIncomplete()">You must complete all fields</span>
+                          <button class="col-3" *ngIf="!isLocationIncomplete()" type="submit"
                               class="btn btn-primary">Submit</button></div>
                       </div>
                     </form>
@@ -142,20 +143,20 @@
 
             <ng-template #editStockFormView>
               <div class="row">
-                <div class="col-2"><strong>Stock Name</strong></div>
+                <div class="col-3"><strong>Stock Name</strong></div>
                 <div class="col-2"><strong>Quantity</strong></div>
-                <div class="col-2"><strong>Description</strong></div>
+                <div class="col-4"><strong>Description</strong></div>
               </div>
               <div class="row">
                 <hr style="border: 1px solid black;">
               </div>
               
-                 
                 <div  *ngFor="let stock of stock_list | paginate: { itemsPerPage: 12, currentPage: page }; let i = index;">
                       
                       <form class="row" [formGroup]="getFormControl(i)" (ngSubmit)="OnEditStockSubmit(stock.location, stock._id, i)">
-                      <div class="col-2"><div class="col-8">
-                        <select id="details" name="details" class="form-control" formControlName="details" class="form-select">
+                      <div class="col-3"><div class="col-8">
+                        <select id="details" name="details" class="form-control" formControlName="details" class="form-select"
+                        [ngClass]="{'error': isStockEditInvalid('details', i)}">
                             <option *ngFor="let s_details of stock_details" [value]="s_details._id">{{s_details.name}}</option>
                        </select>
                       </div></div>
@@ -164,11 +165,14 @@
                         <input id="qty" name="qty"
                             class="form-control" 
                             formControlName="qty"
-                            type="text">
+                            type="number"
+                            [ngClass]="{'error': isStockEditInvalid('qty', i)}">
                       </div></div></div>
-                      <div class="col-3">{{stock.desc}}</div>
+                      <div class="col-4">{{stock.desc}}</div>
                       
-                      <div class="col-4"><button  type="submit" class="btn btn-primary">Submit</button> </div>
+                      <div class="col-3"> <span *ngIf="isStockEditIncomplete(i)">You must complete all fields</span>
+                        <button *ngIf="!isStockEditIncomplete(i)" type="submit"
+                            class="btn btn-primary">Submit</button></div>
                       &nbsp;
                       <hr>
                       </form>
@@ -181,12 +185,7 @@
                   <pagination-controls (pageChange)="page = $event"></pagination-controls>
               </div>
             </ng-template>
-
-            
           </div>
-
-
-            
           </div>
             <form  [formGroup]="stockForm"  (ngSubmit)="OnStockSubmit()">
             <div class="row">
@@ -206,12 +205,15 @@
                     <input id="qty" name="qty"
                         class="form-control" 
                         formControlName="qty"
-                        type="text">
+                        type="number"
+                        [ngClass]="{'error': isStockInvalid('qty')}">
                   </div></div>
                 </div></div>
                 <div class="row">&nbsp;</div>
                  
-                <div class="col-3"><button type="submit" class="btn btn-primary">Submit</button></div>
+               <div class="col-3"> <span *ngIf="isStockIncomplete()">You must complete all fields</span>
+                    <button *ngIf="!isStockIncomplete()" type="submit"
+                        class="btn btn-primary">Submit</button></div>
             
             <div class="row">&nbsp;</div>
           </form>

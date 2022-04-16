@@ -1,8 +1,10 @@
 <div style="padding-top:70px; height: 100%;">
     <div class="container">
+        <div class="row">&nbsp;</div>
         <div class="col-6">
             <button class="btn btn-primary"(click)="ChangeImage()">Toggle Images</button>
         </div>
+        <div class="row">&nbsp;</div>
         <div class="row">
                 <div *ngFor="let details of details_list | paginate: { itemsPerPage: 12, currentPage: page }" class="col-4 p-1">
                     <div class="card" style = "width: 40%; margin: auto" style="background-color: white;" >
@@ -13,7 +15,7 @@
                                 <div class="col-6"><button class="btn btn-primary"(click)="DownloadQR(details._id)">Download QR Code</button></div>
                             </div>
                         </div>
-                        <div class="card-body" style="background-color: rgb(22, 75, 175); color: white;">
+                        <div class="card-body" style="background-color: #185c9b; color: white;">
                             <div class="row">
                                 <div class="col-6">Stock Name: {{ details.name }}</div>
                                 
@@ -38,14 +40,16 @@
                     <input id="name" name="name"
                         class="form-control" 
                         formControlName="name"
+                        [ngClass]="{'error': isDetailsInvalid('name')}"
                         type="text">
                   </div></div>
-                  <div class="col-1"><label for="reoder">Reorder Amount:</label></div>
+                  <div class="col-1"><label for="reorder">Reorder Amount:</label></div>
                   <div class="col-2"><div class="form-group"> 
-                    <input id="reoder" name="reoder"
+                    <input id="reoder" name="reorder"
                         class="form-control" 
                         formControlName="reorder"
-                        type="text">
+                        [ngClass]="{'error': isDetailsInvalid('reorder')}"
+                        type="number">
                   </div></div>
                   <div class="row">&nbsp;</div>
                   <div class="row">
@@ -53,13 +57,11 @@
                     <div class="col-5"><div class="form-group"> 
                         <textarea id="desc" rows="3" name="desc"
                         class="form-control"
+                        [ngClass]="{'error': isDetailsInvalid('desc')}"
                         formControlName="desc"></textarea>
                     </div></div>
                 </div>
                 <div class="row">&nbsp;</div>
-                
-                    
-                    
                     <div class="col-5"><label for="img" class="form-label">Stock Image</label>
                         <input type="file" accept="image/*" class="form-control" id="img"
                         
@@ -67,7 +69,9 @@
                 </div>
                 <div class="row">&nbsp;</div>
                   <div class="row">
-                <div class="col-3"><button type="submit" class="btn btn-primary">Submit</button></div>
+                    <div class="col-3"> <span *ngIf="isDetailsIncomplete()">You must complete all fields</span>
+                        <button *ngIf="!isDetailsIncomplete()" type="submit"
+                            class="btn btn-primary">Submit</button></div>
             </div>
             <div class="row">&nbsp;</div>
           </form>

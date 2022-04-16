@@ -10,16 +10,16 @@
                                 <div class="col-6"><button class="btn btn-primary"(click)="DownloadQR(location._id)">Download QR Code</button></div>
                             </div>
                         </div>
-                        <div class="card-body" style="background-color: rgb(22, 75, 175); color: white;">
+                        <div class="card-body" style="background-color: #185c9b; color: white;">
                             <div class="row">
                                 <div class="col-6">Location: {{ location.location }}</div>
                                 <div class="col-6">Warehouse: {{ location.warehouse }}</div>
                                 </div>
                         </div>
                         <div class="card-footer" style="background-color: white;">
-                            <div class="col-4">Rack: {{ location.stock_rack }}</div>
-                            <div class="col-4">Row: {{ location.rack_column }}</div>
-                            <div class="col-4">Column: {{ location.rack_row }}</div>
+                            <div class="col-12">Rack: {{ location.stock_rack }}</div>
+                            <div class="col-12">Row: {{ location.rack_column }}</div>
+                            <div class="col-12">Column: {{ location.rack_row }}</div>
                         </div>
                 </div>
             </div> 

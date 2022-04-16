@@ -47,8 +47,8 @@ export class StockComponent {
     });
 
     this.stockForm = this.formBuilder.group({
-      details: '',
-      qty: ''
+      details: ['', Validators.required],
+      qty: ['', Validators.required]
     });
 
     this.arrayForm = this.formBuilder.group({
@@ -113,8 +113,8 @@ export class StockComponent {
           this.ClearFormArray(this.stockEdit); 
           this.stock_list.forEach((stock : any) => {
             var stockEditForm = this.formBuilder.group({
-              details: stock["details"],
-              qty: stock['quantity']
+              details: [stock["details"], Validators.required],
+              qty: [stock['quantity'], Validators.required]
             });
             this.stockEdit.push(stockEditForm);
           }); 
@@ -185,16 +185,27 @@ export class StockComponent {
    }
 
   isStockUntouched() {
-    return this.stockForm.controls.location.pristine ||
-            this.stockForm.controls.warehouse.pristine;
+    return this.stockForm.controls.details.pristine ||
+            this.stockForm.controls.qty.pristine;
                   
   }
 
-    isStockIncomplete() {
-      return this.isLocationInvalid('details') ||
-      this.isLocationInvalid('qty') ||
+  isStockIncomplete() {
+    return this.isStockInvalid('details') ||
+      this.isStockInvalid('qty') ||
       this.isStockUntouched(); 
-    }
+  }
+
+  isStockEditInvalid(control: any, id: any) {
+      return this.getFormControl(id).controls[control].invalid &&
+              this.getFormControl(id).controls[control].touched;
+  }
+  
+  isStockEditIncomplete(id: any) {
+        return this.isStockEditInvalid('details', id) ||
+        this.isStockEditInvalid('qty', id);
+        
+  }
 
   
 

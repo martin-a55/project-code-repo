@@ -18,7 +18,6 @@ export class StockDetailComponent {
 
   page : number = 1
   editForm: any;
-  stockForm : any;
   isStock : boolean = false;
   imageType : string = "qrimagestore/";
   randomNum : number = 1; 
@@ -37,16 +36,13 @@ export class StockDetailComponent {
     this.RefreshDetails(); 
 
     this.editForm = this.formBuilder.group({
-      name: '',
-      desc: '',
-      reorder: '',
+      name: ['', Validators.required],
+      desc: ['', Validators.required],
+      reorder: ['', Validators.required],
       img: new File([""], "noimg"),
     });
 
-    this.stockForm = this.formBuilder.group({
-      details: '',
-      qty: ''
-    });
+
   }
 
 arrayForm = this.formBuilder.group({
@@ -83,16 +79,6 @@ arrayForm = this.formBuilder.group({
     
   }
 
-  OnStockSubmit(){
-    this.webService.postStock(this.stockForm.value, this.route.snapshot.params['id'])
-    .subscribe((respones: any ) => {
-      
-      this.webService.getOneStockLocation(this.route.snapshot.params['id']).subscribe((result : any) => {
-        this.RefreshStock();
-      });
-    });
-  }
-
   OnDeleteDetails(){
     this.webService.deleteDetails(this.route.snapshot.params['id']).subscribe(() => {
       this.router.navigateByUrl("/stockdetails");
@@ -115,8 +101,8 @@ arrayForm = this.formBuilder.group({
           this.ClearFormArray(this.stockEdit); 
           this.stock_list.forEach((stock : any) => {
             var stockEditForm = this.formBuilder.group({
-              details: stock["details"],
-              qty: stock['quantity']
+              details: [stock["details"], Validators.required],
+              qty: [stock['quantity'], Validators.required]
             });
             this.stockEdit.push(stockEditForm);
           }); 
@@ -211,6 +197,27 @@ arrayForm = this.formBuilder.group({
       array.removeAt(0)
     }
   }
+
+  isStockEditInvalid(control: any, id: any) {
+      return this.getFormControl(id).controls[control].invalid &&
+              this.getFormControl(id).controls[control].touched;
+  }
+  
+  isStockEditIncomplete(id: any) {
+        return this.isStockEditInvalid('details', id) ||
+        this.isStockEditInvalid('qty', id);
+        
+  }
+
+  isDetailsInvalid(control: any) {
+    return this.editForm.controls[control].invalid &&
+            this.editForm.controls[control].touched;
+   }
+isDetailsIncomplete() {
+      return this.isDetailsInvalid('name') ||
+      this.isDetailsInvalid('desc') ||
+      this.isDetailsInvalid('reorder'); 
+    }
   
 
   toggleEdit: boolean = true;

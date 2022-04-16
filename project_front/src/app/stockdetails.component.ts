@@ -30,9 +30,9 @@ export class StockDetailsComponent {
     });
 
     this.detailsForm = this.formBuilder.group({
-      name: '',
-      desc: '',
-      reorder: '',
+      name: ['', Validators.required],
+      desc: ['', Validators.required],
+      reorder: ['', Validators.required],
       img: new File([""], "noimg"),
     });
   }
@@ -91,6 +91,25 @@ export class StockDetailsComponent {
       return desc; 
     }
   }
+
+  
+  isDetailsInvalid(control: any) {
+    return this.detailsForm.controls[control].invalid &&
+            this.detailsForm.controls[control].touched;
+   }
+
+  isDetailsUntouched() {
+    return this.detailsForm.controls.name.pristine ||
+            this.detailsForm.controls.desc.pristine ||
+            this.detailsForm.controls.reorder.pristine;     
+  }
+
+    isDetailsIncomplete() {
+      return this.isDetailsInvalid('name') ||
+      this.isDetailsInvalid('desc') ||
+      this.isDetailsInvalid('reorder') ||
+      this.isDetailsUntouched(); 
+    }
 
  
   details_list : any = [];  

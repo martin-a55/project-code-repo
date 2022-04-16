@@ -14,7 +14,7 @@
                       
                       </div>
                         <ng-container *ngIf = "toggleEdit; else editFormView">
-                        <div class="card-body" style="background-color: rgb(22, 75, 175); color: white;">
+                        <div class="card-body" style="background-color: #185c9b; color: white;">
                             <div class="row">
                                 <div class="col-6">Name: {{ details.name }}</div>
                                 <div class="col-6">Reoder: {{ details.reorder }}</div>
@@ -27,7 +27,7 @@
                       </ng-container>
                       <ng-template #editFormView>
                         <form [formGroup]="editForm"(ngSubmit)="OnEditSubmit()">
-                        <div class="card-body" style="background-color: rgb(22, 75, 175); color: white;">
+                        <div class="card-body" style="background-color: #185c9b; color: white;">
                     
                           <div class="row">
                             <div class="col-3"><label for="name">Name:</label></div>
@@ -37,6 +37,7 @@
                                         class="form-control" 
                                         formControlName="name"
                                         type="text"
+                                        [ngClass]="{'error': isDetailsInvalid('name')}"
                                         [ngModel]="details.name">
                             </div></div>
                               <div class="col-3"><label for="reorder">Reorder:</label></div>
@@ -46,6 +47,7 @@
                                     class="form-control" 
                                     formControlName="reorder"
                                     type="text"
+                                    [ngClass]="{'error': isDetailsInvalid('reorder')}"
                                     [ngModel]="details.reorder">
                         </div></div>
                               </div>
@@ -61,6 +63,7 @@
                                 class="form-control" 
                                 formControlName="desc"
                                 type="text"
+                                [ngClass]="{'error': isDetailsInvalid('desc')}"
                                 [ngModel]="details.desc"></textarea>
                     </div></div>
                         </div>
@@ -77,9 +80,9 @@
                         </div>
                         &nbsp;
                         <div class="row">
-                          <div class="col-3">
-                          <button  type="submit" class="btn btn-primary">Submit</button> 
-                        </div>
+                          <div > <span class="col-6"  *ngIf="isDetailsIncomplete()">You must complete all fields</span>
+                            <button class="col-3" *ngIf="!isDetailsIncomplete()" type="submit"
+                                class="btn btn-primary">Submit</button></div>
                         </div>
                       </div>
                     </form>
@@ -128,44 +131,47 @@
           </ng-container>
           <ng-template #editStockFormView>
             <div class="row">
-              <div class="col-2"><strong>Stock Name</strong></div>
-              <div class="col-2"><strong>Quantity</strong></div>
-              <div class="col-2"><strong>Description</strong></div>
-            </div>
-            <div class="row">
-              <hr style="border: 1px solid black;">
-            </div>
-            
-               
-              <div  *ngFor="let stock of stock_list | paginate: { itemsPerPage: 12, currentPage: page }; let i = index;">
+                <div class="col-3"><strong>Stock Name</strong></div>
+                <div class="col-2"><strong>Quantity</strong></div>
+                <div class="col-4"><strong>Description</strong></div>
+              </div>
+              <div class="row">
+                <hr style="border: 1px solid black;">
+              </div>
+              
+                <div  *ngFor="let stock of stock_list | paginate: { itemsPerPage: 12, currentPage: page }; let i = index;">
+                      
+                      <form class="row" [formGroup]="getFormControl(i)" (ngSubmit)="OnEditStockSubmit(stock.location, stock._id, i)">
+                      <div class="col-3"><div class="col-8">
+                        <select id="details" name="details" class="form-control" formControlName="details" class="form-select"
+                        [ngClass]="{'error': isStockEditInvalid('details', i)}">
+                            <option *ngFor="let s_details of stock_details" [value]="s_details._id">{{s_details.name}}</option>
+                       </select>
+                      </div></div>
+                      <div class="col-2">
+                      <div class="col-6"><div class="form-group"> 
+                        <input id="qty" name="qty"
+                            class="form-control" 
+                            formControlName="qty"
+                            type="number"
+                            [ngClass]="{'error': isStockEditInvalid('qty', i)}">
+                      </div></div></div>
+                      <div class="col-4">{{details.desc}}</div>
+                      
+                      <div class="col-3"> <span *ngIf="isStockEditIncomplete(i)">You must complete all fields</span>
+                        <button *ngIf="!isStockEditIncomplete(i)" type="submit"
+                            class="btn btn-primary">Submit</button></div>
+                      &nbsp;
+                      <hr>
+                      </form>
                     
-                    <form class="row" [formGroup]="getFormControl(i)" (ngSubmit)="OnEditStockSubmit(stock.location, stock._id, i)">
-                    <div class="col-2"><div class="col-8">
-                      <select id="details" name="details" class="form-control" formControlName="details" class="form-select">
-                          <option *ngFor="let s_details of stock_details" [value]="s_details._id">{{s_details.name}}</option>
-                     </select>
-                    </div></div>
-                    <div class="col-2">
-                    <div class="col-6"><div class="form-group"> 
-                      <input id="qty" name="qty"
-                          class="form-control" 
-                          formControlName="qty"
-                          type="text">
-                    </div></div></div>
-                    <div class="col-3">{{details.desc}}</div>
-                    
-                    <div class="col-4"><button  type="submit" class="btn btn-primary">Submit</button> </div>
-                    &nbsp;
-                    <hr>
-                    </form>
-                  
-                  </div>
-            <div class="row">
-                <div class="col-4"><button class="btn btn-primary" (click)="onToggleStockEdit()">Edit</button></div>
-            </div>
-            <div class="row">
-                <pagination-controls (pageChange)="page = $event"></pagination-controls>
-            </div>
+                </div>
+                <div class="row">
+                    <div class="col-4"><button class="btn btn-primary" (click)="onToggleStockEdit()">Edit</button></div>
+                </div>
+              <div class="row">
+                  <pagination-controls (pageChange)="page = $event"></pagination-controls>
+              </div>
           </ng-template>
           </div>
         </div>
