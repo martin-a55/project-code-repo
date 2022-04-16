@@ -13,7 +13,7 @@ import { InsightService } from './insight.service';
 
 export class LocationComponent {
   constructor(public webService: WebService, private formBuilder: FormBuilder, public authService: AuthService, private insight: InsightService) {}
-  page : number = 1
+  page : number = 1;
   locationForm : any; 
 
   async ngOnInit() {

@@ -10,14 +10,16 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { AuthModule } from '@auth0/auth0-angular';
 import { NavComponent } from './nav.component';
 import { LocationComponent } from './location.component';
-import {NgxPaginationModule} from 'ngx-pagination';
+import { NgxPaginationModule } from 'ngx-pagination';
 import { StockComponent } from './stock.component';
 import { StockDetailsComponent } from './stockdetails.component';
+import { SearchComponent } from './search.component';
 import { InsightService } from './insight.service';
 import { AuthGuard } from '@auth0/auth0-angular';
 import { StockDetailComponent } from './stockdetail.component';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthHttpInterceptor } from '@auth0/auth0-angular';
+
 
 
 var routes: any = [
@@ -45,12 +47,17 @@ var routes: any = [
   path : 'stockdetails/:id',
     component: StockDetailComponent, 
     canActivate: [AuthGuard]
+  },
+  {
+  path : 'search',
+    component: SearchComponent, 
+    canActivate: [AuthGuard]
   }
 ];
 
 @NgModule({
   declarations: [
-    AppComponent, HomeComponent, NavComponent, LocationComponent, StockComponent, StockDetailsComponent, StockDetailComponent
+    AppComponent, HomeComponent, NavComponent, LocationComponent, StockComponent, StockDetailsComponent, StockDetailComponent, SearchComponent
   ],
   imports: [
     BrowserModule, HttpClientModule, RouterModule.forRoot(routes), ReactiveFormsModule, NgxPaginationModule,

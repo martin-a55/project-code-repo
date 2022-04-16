@@ -308,6 +308,7 @@ def delete_stock(lid, sid):
         return make_response(jsonify({ "error": "Invalid Stock Location or Stock ID, check your location and stock exist and try again" }), 404)
 
 @app.route("/api/v1.0/details", methods=["GET"])
+@requires_auth
 def get_all_stock_details():
     all_stock_details = []
     for stock_details in detailsCol.find():
@@ -316,6 +317,7 @@ def get_all_stock_details():
     return make_response( jsonify(all_stock_details), 200 )
 
 @app.route("/api/v1.0/details/<string:id>", methods=["GET"])
+@requires_auth
 def get_one_stock_details(id):
     details = detailsCol.find_one({'_id': ObjectId(id)})
     if details is not None:
@@ -325,6 +327,7 @@ def get_one_stock_details(id):
         return make_response(jsonify( {"error": "Invalid Stock Detail ID, check your details exists and try again"}), 404)
 
 @app.route("/api/v1.0/details", methods=["POST"])
+@requires_auth
 def add_details():
     if "name" in request.form and "desc" in request.form and "reorder" in request.form and "img" in request.files:
 
@@ -361,6 +364,7 @@ def add_details():
         return make_response( jsonify( {"error":"Missing form data"} ), 404)
 
 @app.route("/api/v1.0/details/<string:id>", methods=["PUT"])
+@requires_auth
 def edit_details(id):
     if "name" in request.form and "desc" in request.form and "reorder" in request.form and "img" in request.files:
         update_details = detailsCol.update_one( { "_id" : ObjectId(id) },
@@ -379,6 +383,7 @@ def edit_details(id):
         return make_response( jsonify( { "error" : "Missing form data" } ), 404)
 
 @app.route("/api/v1.0/details/<string:id>", methods=["DELETE"])
+@requires_auth
 def delete_details(id):
     result = detailsCol.delete_one( { "_id" : ObjectId(id) } )
     if result.deleted_count == 1:
@@ -395,6 +400,7 @@ def delete_details(id):
         return make_response( jsonify( {"error": "Invalid Stock Details ID, check your location exists and try again"} ), 404)
 
 @app.route("/api/v1.0/details/<string:id>/stock", methods=["GET"])
+@requires_auth
 def get_all_stock_by_details(id):
     all_stock_details = []
     for location in stockCol.find():
@@ -411,6 +417,82 @@ def get_all_stock_by_details(id):
 
                 all_stock_details.append(new_stock)
     return make_response( jsonify(all_stock_details), 200 )
+
+@app.route("/api/v1.0/stock/search", methods=["GET"])
+def search_stock():
+    field, value = "", "";
+
+    col = stockCol;
+
+    if request.args.get('field'):
+        field = str(request.args.get('field'))
+    if request.args.get('val'):
+        value = str(request.args.get('val'))
+
+    data_to_return = []
+    if field == 'all':
+        for location in stockCol.find({"$or": [
+            {'location': {"$regex": value}},
+            {'warehouse': {"$regex": value}},
+            {'stock_rack': {"$regex": value}},
+            {'rack_row': {"$regex": value}},
+            {'rack_column': {"$regex": value}}
+        ]}):
+            for stock in location['stock']:
+                stock['_id'] = str(stock['_id'])
+            new_location = {"_id": str(location['_id']),
+                            "location": location["location"],
+                            "rack_row": location["rack_row"],
+                            "rack_column": location["rack_column"],
+                            "stock_rack": location["stock_rack"],
+                            "warehouse": location["warehouse"],
+                            "stock": location["stock"],
+                            "type": "location"
+                            }
+            data_to_return.append(new_location)
+
+        for details in detailsCol.find({"$or": [
+            {'name': {"$regex": value}},
+            {'desc': {"$regex": value}},
+            {'reorder': {"$regex": value}}
+        ]}):
+            new_details = { "_id":  str(details['_id']),
+                            "name":  details["name"],
+                           "desc":  details["desc"],
+                           "reorder":  details["reorder"],
+                           "type": "details"
+                           }
+            data_to_return.append(new_details)
+        return make_response(jsonify(data_to_return), 200)
+    elif field == "location" or field == "warehouse" or field == "rack" or field == "row" or field == "column":
+        for location in stockCol.find({field: {"$regex": value}}):
+            location['_id'] = str(location['_id'])
+            for stock in location['stock']:
+                stock['_id'] = str(stock['_id'])
+            new_location = {"_id": str(location['_id']),
+                            "location": location["location"],
+                            "rack_row": location["rack_row"],
+                            "rack_column": location["rack_column"],
+                            "stock_rack": location["stock_rack"],
+                            "warehouse": location["warehouse"],
+                            "stock": location["stock"],
+                            "type": "location"
+                            }
+            data_to_return.append(new_location)
+        return make_response(jsonify(data_to_return), 200)
+    elif field == "name" or field == "desc" or field == "reorder":
+        for details in detailsCol.find({field: {"$regex": value}}):
+            new_details = {"_id": str(details['_id']),
+                           "name": details["name"],
+                           "desc": details["desc"],
+                           "reorder": details["reorder"],
+                           "type": "details"
+                           }
+            data_to_return.append(new_details)
+        return make_response(jsonify(data_to_return), 200)
+    else:
+        return make_response(jsonify({"error": "Invalid field value"}), 404)
+
 
 def create_qr(id):
     input_data = qr_url + "/location/" + id

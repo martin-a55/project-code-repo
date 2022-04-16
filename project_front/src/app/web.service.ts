@@ -132,4 +132,10 @@ export class WebService {
             encodeURI(this.host + '/api/v1.0/location/' + lid + '/stock/' + sid), postData);
                 
         }
+
+        getSearch(field: any, value: any, col: any) {
+          return this.http.get(
+            encodeURI(this.host + '/api/v1.0/stock/search?field=' + field + "&val=" + value + "&col=" + col));
+          }
+    
 }

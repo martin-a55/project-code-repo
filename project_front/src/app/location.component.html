@@ -1,5 +1,10 @@
 <div style="padding-top:70px; height: 100%;">
     <div class="container">
+        <div class="row">&nbsp;</div>
+        <div class="row">
+            <h3 class="col-6">All Stock Locations</h3>
+        </div>
+        <div class="row">&nbsp;</div>
         <div class="row">
                 <div *ngFor="let location of location_list | paginate: { itemsPerPage: 12, currentPage: page }" class="col-4 p-1">
                     <div class="card" style = "width: 40%; margin: auto" style="background-color: white;" >
@@ -21,7 +26,9 @@
                             <div class="col-12">Row: {{ location.rack_column }}</div>
                             <div class="col-12">Column: {{ location.rack_row }}</div>
                         </div>
+                        
                 </div>
+                <div class="card-footer" style="background-color: #00adf1;"></div>
             </div> 
         </div> 
         <div class="row">
