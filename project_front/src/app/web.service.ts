@@ -87,6 +87,7 @@ export class WebService {
           postData.append("name", details.name);
           postData.append("desc", details.desc);
           postData.append("reorder", details.reorder);
+          postData.append("max", details.max);
           postData.append("img", details.img);
           
           return this.http.post(
@@ -99,6 +100,7 @@ export class WebService {
              postData.append("name", details.name);
           postData.append("desc", details.desc);
           postData.append("reorder", details.reorder);
+          postData.append("max", details.max);
           postData.append("img", details.img);
             
             

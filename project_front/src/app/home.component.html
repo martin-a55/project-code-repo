@@ -1,31 +1,82 @@
 <div style="padding-top:70px; height: 100%;">
-    
-
-<ng-container *ngIf = "authService.isAuthenticated$ | async; else loggedOut">
-        
-
-</ng-container>
-<ng-template #loggedOut>
-        
-        <div class="card; col-6; "  style="background-color: white; margin-left: auto;
-        margin-right: auto;  margin-top: 5em;
-        width: 35em; height: 100px"  >
+    <div class="container">
+        <div class="row">
             
-        <div class="card-header">
-            <h4 class="col-12">Welcome to Convayor Tek Stock Managment</h4>
-        </div>
-        <div class="card-body" style="background-color: #185c9b; color: white;">
-            <div class="row">
-                <div>{{deniedLoginMessage}}</div>
-                <button class="btn btn-outline-light" (click) = "authService.loginWithRedirect({ appState : { target : this.router.url }  })">Login or signup with Auth0</button>
-                
-                </div>
-        </div>
-        <div class="card-footer" style="background-color: #00adf1;"></div>
-</div>
-</ng-template>
 
-   
+    <ng-container *ngIf = "authService.isAuthenticated$ | async; else loggedOut">
+        <div style=" margin-top: 2em;"></div>
+        <div class="col-6 p-1">
+            <div class="card" style = "width: 40%; margin: auto" 
+                style="cursor: pointer" >
+                <div class="card-header">
+                    <h4 class="col-12" style="text-align:center">Welcome to Convayor Tek Stock Managment</h4>
+                </div>
+                <div class="card-body" style="background-color: #185c9b; color: white;">
+                        <div class="row">
+                            <h5 style="text-align:center">Getting Started</h5>
+                    <p style="text-align:center">Get started by browsing and adding stock locations and details</p>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="row">
+                        <div class="col-6">
+                            <button style="width: 75%;  margin-left: auto;
+                        margin-right: auto;"  class="btn btn-primary" routerLink='/location'>View all Stock Locations</button>
+                        </div>
+                        <div class="col-6">
+                            <button style="width: 75%;  margin-left: auto; margin-right: auto;"  class="btn btn-primary" routerLink='/stockdetails'>View all Stock Details</button>
+                        </div>
+                    </div>
+                    </div>
+                    <div class="card-footer" style="background-color: #00adf1;"></div>
+            </div>
+        </div> 
+
+        <div class="col-6 p-1">
+            <div class="card" style = "width: 40%; margin: auto" 
+            style="cursor: pointer" >
+                <div class="card-header">
+                <h4 class="col-12" style="text-align:center">Test</h4>
+                </div>
+                <div class="card-body" style="background-color: #185c9b; color: white;">
+                    <div class="row">
+                        <h4 class="col-12" style="text-align:center">Test</h4>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <h4 class="col-12" style="text-align:center">Test</h4>
+                </div>
+                <div class="card-footer" style="background-color: #00adf1;"></div>
+            </div>
+        </div> 
+
+    
+    </ng-container>
+    <ng-template #loggedOut>
+        
+            <div class="card; col-6; "  style="background-color: white; margin-left: auto;
+            margin-right: auto;  margin-top: 5em;
+            width: 35em; height: 100px"  >
+            
+            <div class="card-header">
+                <h4 class="col-12" style="text-align:center">Welcome to Convayor Tek Stock Managment</h4>
+            </div>
+            <div class="card-body" style="background-color: #185c9b; color: white;">
+                    <div class="row">
+                        <button style="width: 50%;  margin-left: auto;
+                        margin-right: auto;" class="btn btn-outline-light" (click) = "authService.loginWithRedirect({ appState : { target : this.router.url }  })">Login or signup with Auth0</button>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <h5 style="text-align:center">Can't get access?</h5>
+                    <p style="text-align:center">Contact your administrator or ensure your email or domain is permitted</p>
+                    <p style="text-align:center"><b>{{deniedLoginMessage}}</b></p>
+                </div>
+                <div class="card-footer" style="background-color: #00adf1;"></div>
+        </div>
+        </ng-template>
+        </div>
+   </div>
 </div>
 
     

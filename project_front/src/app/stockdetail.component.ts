@@ -39,6 +39,7 @@ export class StockDetailComponent {
       name: ['', Validators.required],
       desc: ['', Validators.required],
       reorder: ['', Validators.required],
+      max: ['', Validators.required],
       img: new File([""], "noimg"),
     });
 

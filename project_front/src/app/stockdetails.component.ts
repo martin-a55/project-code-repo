@@ -32,6 +32,7 @@ export class StockDetailsComponent {
       name: ['', Validators.required],
       desc: ['', Validators.required],
       reorder: ['', Validators.required],
+      max: ['', Validators.required],
       img: new File([""], "noimg"),
     });
   }
@@ -100,6 +101,7 @@ export class StockDetailsComponent {
   isDetailsUntouched() {
     return this.detailsForm.controls.name.pristine ||
             this.detailsForm.controls.desc.pristine ||
+            this.detailsForm.controls.max.pristine ||
             this.detailsForm.controls.reorder.pristine;     
   }
 
@@ -107,6 +109,7 @@ export class StockDetailsComponent {
       return this.isDetailsInvalid('name') ||
       this.isDetailsInvalid('desc') ||
       this.isDetailsInvalid('reorder') ||
+      this.isDetailsInvalid('max') ||
       this.isDetailsUntouched(); 
     }
 

@@ -12,15 +12,17 @@
                                   aria-label="Button that toggles between images" matTooltipPosition="left">Toggle Image</button></div>
                         </div>
                         
-                        
-                      
                       </div>
                         <ng-container *ngIf = "toggleEdit; else editFormView">
                         <div class="card-body" style="background-color: #185c9b; color: white;">
                             <div class="row">
                                 <div class="col-6">Name: {{ details.name }}</div>
-                                <div class="col-6">Reoder: {{ details.reorder }}</div>
+                                <div class="col-6">Reorder: {{ details.reorder }}</div>
                                 </div>
+                                <div class="row">
+                                  <div class="col-6"></div>
+                                  <div class="col-6">Max Stock: {{ details.max }}</div>
+                                 </div>
                         </div>
                         <div class="card-footer" style="background-color: white;">
                             <div class="col-12">Description: {{ details.desc }}</div>
@@ -52,6 +54,20 @@
                                     [ngClass]="{'error': isDetailsInvalid('reorder')}"
                                     [ngModel]="details.reorder">
                         </div></div>
+                              </div>
+                              <div class="row">
+                                <div class="col-6"></div>
+                                <div class="col-3"><label for="Max">Max Stock:</label></div>
+                                <div class="col-3"><div class="form-group"> 
+                                
+                                  <input id="max" name="max"
+                                      class="form-control" 
+                                      formControlName="max"
+                                      type="text"
+                                      [ngClass]="{'error': isDetailsInvalid('max')}"
+                                      [ngModel]="details.max">
+                          </div></div>
+                              
                               </div>
                             
                       </div>

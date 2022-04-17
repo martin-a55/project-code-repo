@@ -24,7 +24,7 @@ export class HomeComponent {
         this.route.queryParams
         .subscribe((respones: any ) => {
             if(respones.access == "denied"){
-                this.deniedLoginMessage = "Email not recognised, make sure you entered it correctly or that your admin has given it access"
+                this.deniedLoginMessage = "This email or domain is not permitted access, ensure your details are correct or contact your administrator"
             }
         
         })

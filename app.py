@@ -329,11 +329,12 @@ def get_one_stock_details(id):
 @app.route("/api/v1.0/details", methods=["POST"])
 @requires_auth
 def add_details():
-    if "name" in request.form and "desc" in request.form and "reorder" in request.form and "img" in request.files:
+    if "name" in request.form and "desc" in request.form and "reorder" in  request.form and "max" in  request.form and "img" in request.files:
 
         new_details = { "name" : request.form["name"],
                         "desc" : request.form["desc"],
                         "reorder": request.form["reorder"],
+                        "max": request.form["max"]
                          }
         new_details_id = detailsCol.insert_one(new_details)
         new_id = str(new_details_id.inserted_id)
@@ -341,8 +342,6 @@ def add_details():
         qr_path = create_qr(new_id)
 
         blob.create_blob_from_path("qrimagestore", new_id + ".png", qr_path)
-
-
 
         if "image/" in request.files["img"].content_type:
             blob.create_blob_from_stream("stockimagestore", new_id + ".png", request.files["img"])
@@ -366,11 +365,12 @@ def add_details():
 @app.route("/api/v1.0/details/<string:id>", methods=["PUT"])
 @requires_auth
 def edit_details(id):
-    if "name" in request.form and "desc" in request.form and "reorder" in request.form and "img" in request.files:
+    if "name" in request.form and "desc" in request.form and "reorder" in request.form and "max" in request.form and "img" in request.files:
         update_details = detailsCol.update_one( { "_id" : ObjectId(id) },
                                         { "$set" : { "name" : request.form["name"],
                                                     "desc" : request.form["desc"],
                                                     "reorder": request.form["reorder"],
+                                                    "max": request.form["max"],
                                         } } )
         if update_details.matched_count == 1:
             if "image/" in request.files["img"].content_type:
@@ -432,10 +432,34 @@ def search_stock():
         return make_response(jsonify(search_all(value)), 200)
     elif field == "location" or field == "warehouse" or field == "rack" or field == "row" or field == "column":
         return make_response(jsonify(search_location(field, value)), 200)
-    elif field == "name" or field == "desc" or field == "reorder":
+    elif field == "name" or field == "desc" or field == "reorder" or field == "max":
         return make_response(jsonify(search_details(field, value)), 200)
     else:
         return make_response(jsonify({"error": "Invalid field value"}), 404)
+
+@app.route("/api/v1.0/stock/reorder", methods=["GET"])
+def get_stock_reorder():
+    all_restock_details = []
+    for details in detailsCol.find():
+        details["_id"] = str(details["_id"])
+        stock_amount = 0;
+        for location in stockCol.find():
+            for stock in location["stock"]:
+                if stock["details"] == details["_id"]:
+                    stock_amount += int(stock["quantity"])
+        if stock_amount < int(details["reorder"]):
+            new_details = {
+                "_id": details['_id'],
+                "name": details["name"],
+                "total": str(stock_amount),
+                "reorder": details["reorder"],
+                "max": details["max"],
+                "quantity": stock['quantity']
+            }
+            all_restock_details.append(new_details)
+
+    return make_response(jsonify(all_restock_details), 200)
+
 
 def search_all(value):
     data_to_return = []
@@ -498,7 +522,7 @@ def search_details(field, value):
                        "name": details["name"],
                        "desc": details["desc"],
                        "reorder": details["reorder"],
-                       "type": "details"
+                       "desc": details["desc"]
                        }
         data_to_return.append(new_details)
     return data_to_return

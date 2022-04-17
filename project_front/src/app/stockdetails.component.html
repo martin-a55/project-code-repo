@@ -40,6 +40,7 @@
               <h3>Add new Stock Details</h3>
             </div>
             <div class="row">
+                <div class="row"></div>
                   <div class="col-1"><label for="name">Stock Name:</label></div>
                   <div class="col-2"><div class="form-group"> 
                     <input id="name" name="name"
@@ -48,12 +49,23 @@
                         [ngClass]="{'error': isDetailsInvalid('name')}"
                         type="text">
                   </div></div>
+                </div>
+                <div class="row">&nbsp;</div>
+                <div class="row"> 
                   <div class="col-1"><label for="reorder">Reorder Amount:</label></div>
                   <div class="col-2"><div class="form-group"> 
                     <input id="reoder" name="reorder"
                         class="form-control" 
                         formControlName="reorder"
                         [ngClass]="{'error': isDetailsInvalid('reorder')}"
+                        type="number">
+                  </div></div>
+                  <div class="col-1"><label for="max">Max Stock Amount:</label></div>
+                  <div class="col-2"><div class="form-group"> 
+                    <input id="max" name="max"
+                        class="form-control" 
+                        formControlName="max"
+                        [ngClass]="{'error': isDetailsInvalid('max')}"
                         type="number">
                   </div></div>
                   <div class="row">&nbsp;</div>
@@ -67,7 +79,7 @@
                     </div></div>
                 </div>
                 <div class="row">&nbsp;</div>
-                    <div class="col-5"><label for="img" class="form-label">Stock Image</label>
+                    <div class="col-6"><label for="img" class="form-label">Stock Image</label>
                         <input #imgInput type="file" accept="image/*" class="form-control" id="img"
                         
                         (change)="onFileChange($event)"></div>
