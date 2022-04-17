@@ -423,77 +423,85 @@ def get_all_stock_by_details(id):
 def search_stock():
     field, value = "", "";
 
-    col = stockCol;
-
     if request.args.get('field'):
         field = str(request.args.get('field'))
     if request.args.get('val'):
         value = str(request.args.get('val'))
 
-    data_to_return = []
     if field == 'all':
-        for location in stockCol.find({"$or": [
-            {'location': {"$regex": value}},
-            {'warehouse': {"$regex": value}},
-            {'stock_rack': {"$regex": value}},
-            {'rack_row': {"$regex": value}},
-            {'rack_column': {"$regex": value}}
-        ]}):
-            for stock in location['stock']:
-                stock['_id'] = str(stock['_id'])
-            new_location = {"_id": str(location['_id']),
-                            "location": location["location"],
-                            "rack_row": location["rack_row"],
-                            "rack_column": location["rack_column"],
-                            "stock_rack": location["stock_rack"],
-                            "warehouse": location["warehouse"],
-                            "stock": location["stock"],
-                            "type": "location"
-                            }
-            data_to_return.append(new_location)
-
-        for details in detailsCol.find({"$or": [
-            {'name': {"$regex": value}},
-            {'desc': {"$regex": value}},
-            {'reorder': {"$regex": value}}
-        ]}):
-            new_details = { "_id":  str(details['_id']),
-                            "name":  details["name"],
-                           "desc":  details["desc"],
-                           "reorder":  details["reorder"],
-                           "type": "details"
-                           }
-            data_to_return.append(new_details)
-        return make_response(jsonify(data_to_return), 200)
+        return make_response(jsonify(search_all(value)), 200)
     elif field == "location" or field == "warehouse" or field == "rack" or field == "row" or field == "column":
-        for location in stockCol.find({field: {"$regex": value}}):
-            location['_id'] = str(location['_id'])
-            for stock in location['stock']:
-                stock['_id'] = str(stock['_id'])
-            new_location = {"_id": str(location['_id']),
-                            "location": location["location"],
-                            "rack_row": location["rack_row"],
-                            "rack_column": location["rack_column"],
-                            "stock_rack": location["stock_rack"],
-                            "warehouse": location["warehouse"],
-                            "stock": location["stock"],
-                            "type": "location"
-                            }
-            data_to_return.append(new_location)
-        return make_response(jsonify(data_to_return), 200)
+        return make_response(jsonify(search_location(field, value)), 200)
     elif field == "name" or field == "desc" or field == "reorder":
-        for details in detailsCol.find({field: {"$regex": value}}):
-            new_details = {"_id": str(details['_id']),
-                           "name": details["name"],
-                           "desc": details["desc"],
-                           "reorder": details["reorder"],
-                           "type": "details"
-                           }
-            data_to_return.append(new_details)
-        return make_response(jsonify(data_to_return), 200)
+        return make_response(jsonify(search_details(field, value)), 200)
     else:
         return make_response(jsonify({"error": "Invalid field value"}), 404)
 
+def search_all(value):
+    data_to_return = []
+    for location in stockCol.find({"$or": [
+        {'location': {"$regex": value, "$options": 'i'}},
+        {'warehouse': {"$regex": value,"$options": 'i'}},
+        {'stock_rack': {"$regex": value, "$options": 'i'}},
+        {'rack_row': {"$regex": value, "$options": 'i'}},
+        {'rack_column': {"$regex": value, "$options": 'i'}}
+    ]}):
+        for stock in location['stock']:
+            stock['_id'] = str(stock['_id'])
+        new_location = {"_id": str(location['_id']),
+                        "location": location["location"],
+                        "rack_row": location["rack_row"],
+                        "rack_column": location["rack_column"],
+                        "stock_rack": location["stock_rack"],
+                        "warehouse": location["warehouse"],
+                        "stock": location["stock"],
+                        "type": "location"
+                        }
+        data_to_return.append(new_location)
+
+    for details in detailsCol.find({"$or": [
+        {'name': {"$regex": value, "$options": 'i'}},
+        {'desc': {"$regex": value, "$options": 'i'}},
+        {'reorder': {"$regex": value, "$options": 'i'}}
+    ]}):
+        new_details = {"_id": str(details['_id']),
+                       "name": details["name"],
+                       "desc": details["desc"],
+                       "reorder": details["reorder"],
+                       "type": "details"
+                       }
+        data_to_return.append(new_details)
+    return data_to_return
+
+def search_location(field, value):
+    data_to_return = []
+    for location in stockCol.find({field: {"$regex": value, "$options": 'i'}}):
+        location['_id'] = str(location['_id'])
+        for stock in location['stock']:
+            stock['_id'] = str(stock['_id'])
+        new_location = {"_id": str(location['_id']),
+                        "location": location["location"],
+                        "rack_row": location["rack_row"],
+                        "rack_column": location["rack_column"],
+                        "stock_rack": location["stock_rack"],
+                        "warehouse": location["warehouse"],
+                        "stock": location["stock"],
+                        "type": "location"
+                        }
+        data_to_return.append(new_location)
+    return data_to_return
+
+def search_details(field, value):
+    data_to_return = []
+    for details in detailsCol.find({field: {"$regex": value, "$options": 'i'}}):
+        new_details = {"_id": str(details['_id']),
+                       "name": details["name"],
+                       "desc": details["desc"],
+                       "reorder": details["reorder"],
+                       "type": "details"
+                       }
+        data_to_return.append(new_details)
+    return data_to_return
 
 def create_qr(id):
     input_data = qr_url + "/location/" + id
