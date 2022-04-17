@@ -6,7 +6,8 @@
                         <img class = "card-img-top" [attr.src]="'https://projectqrstore.blob.core.windows.net/qrimagestore/' + location._id + '.png'" style="object-fit: contain; height: 100mm; padding:10px;" alt="A QR code for the assosiated stock location entry">
                         <div class="card-header">
                             <div class="row">
-                                <div class="col-12"><button class="btn btn-primary" (click)="DownloadQR(location._id)">Download QR Code</button></div>
+                                <div class="col-12"><button class="btn btn-primary" (click)="DownloadQR(location._id)" matTooltip="Download the QR code"
+                                  aria-label="Button that downloads the QR code" matTooltipPosition="right">Download QR Code</button></div>
                         </div>
                         
                         
@@ -94,17 +95,20 @@
                         <div class="row">&nbsp;</div>
                         <div > <span class="col-6"  *ngIf="isLocationIncomplete()">You must complete all fields</span>
                           <button class="col-3" *ngIf="!isLocationIncomplete()" type="submit"
-                              class="btn btn-primary">Submit</button></div>
+                              class="btn btn-primary"  matTooltip="Submit the edited stock location"
+                              aria-label="Button that submits edited location" matTooltipPosition="right">Submit</button></div>
                       </div>
                     </form>
                       </ng-template>
                       <div class="card-footer" style="background-color: white;">
                         <div class="row">
-                          <div class="col-4"><button class="btn btn-primary" (click)="onToggleEdit()">Edit</button></div>
+                          <div class="col-4"><button class="btn btn-primary" (click)="onToggleEdit()"  matTooltip="Toggle Edit on the Stock Location"
+                            aria-label="Button that toggles between editing view on the stock location" matTooltipPosition="right">Edit</button></div>
                           <div class="col-4" >
                             
                           </div>
-                          <div class="col-4"><button class="btn btn-danger" (click)="OnDeleteLocation()">Delete</button></div>
+                          <div class="col-4"><button class="btn btn-danger" (click)="OnDeleteLocation()"  matTooltip="Warning! This will delete all assosiated stock"
+                            aria-label="Button that deletes the current stock location" matTooltipPosition="left">Delete</button></div>
                       </div>
                     </div>
                         
@@ -127,14 +131,17 @@
                     <th scope="row">{{stock.name}}</th>
                     <td>{{stock.quantity}}</td>
                     <td>{{stock.desc}}</td>
-                    <td><button class="btn btn-primary" [routerLink]="['/stockdetails', stock.details]">Get Stock Details</button></td>
-                    <td><button class="btn btn-danger" (click)="OnDeleteStock(stock._id)">Delete</button></td>
+                    <td><button class="btn btn-primary" [routerLink]="['/stockdetails', stock.details]"  matTooltip="Go to the current stocks details page"
+                      aria-label="Button that leads to the current stocks details page" matTooltipPosition="left">Get Stock Details</button></td>
+                    <td><button class="btn btn-danger" (click)="OnDeleteStock(stock._id)"  matTooltip="Warning! This will delete the stock entry"
+                      aria-label="Button that deletes the selected stock" matTooltipPosition="right">Delete</button></td>
                   </tr>
                 </tbody>
               </table>
             </div>
             <div class="row">
-              <div class="col-4"><button class="btn btn-primary" (click)="onToggleStockEdit()">Edit</button></div>
+              <div class="col-4"><button class="btn btn-primary" (click)="onToggleStockEdit()" matTooltip="Toggle Edit on all Stock"
+                aria-label="Button that toggles between" matTooltipPosition="right">Edit</button></div>
             </div>
             <div class="row">
                 <pagination-controls (pageChange)="page = $event"></pagination-controls>
@@ -172,14 +179,16 @@
                       
                       <div class="col-3"> <span *ngIf="isStockEditIncomplete(i)">You must complete all fields</span>
                         <button *ngIf="!isStockEditIncomplete(i)" type="submit"
-                            class="btn btn-primary">Submit</button></div>
+                            class="btn btn-primary" matTooltip="Submit the edited stock"
+                            aria-label="Button that submits edited stock" matTooltipPosition="right">Submit</button></div>
                       &nbsp;
                       <hr>
                       </form>
                     
                 </div>
                 <div class="row">
-                    <div class="col-4"><button class="btn btn-primary" (click)="onToggleStockEdit()">Edit</button></div>
+                    <div class="col-4"><button class="btn btn-primary" (click)="onToggleStockEdit()" matTooltip="Toggle Edit on all Stock"
+                      aria-label="Button that toggles between" matTooltipPosition="right">Edit</button></div>
                 </div>
               <div class="row">
                   <pagination-controls (pageChange)="page = $event"></pagination-controls>
@@ -213,7 +222,8 @@
                  
                <div class="col-3"> <span *ngIf="isStockIncomplete()">You must complete all fields</span>
                     <button *ngIf="!isStockIncomplete()" type="submit"
-                        class="btn btn-primary">Submit</button></div>
+                        class="btn btn-primary" matTooltip="Submit the new stock"
+                        aria-label="Button that submits new stock" matTooltipPosition="right">Submit</button></div>
             
             <div class="row">&nbsp;</div>
           </form>

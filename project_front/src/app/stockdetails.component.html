@@ -6,7 +6,8 @@
         </div>
         <div class="row">&nbsp;</div>
         <div class="col-6">
-            <button class="btn btn-primary"(click)="ChangeImage()">Toggle Images</button>
+            <button class="btn btn-primary"(click)="ChangeImage()" matTooltip="Toggle between QR and stock images"
+            aria-label="Button that toggles between images" matTooltipPosition="left">Toggle Images</button>
         </div>
         <div class="row">&nbsp;</div>
         <div class="row">
@@ -15,8 +16,10 @@
                             <img class = "card-img-top" [attr.src]="'https://projectqrstore.blob.core.windows.net/' + imageType + details._id + '.png?' + randomNum" style="object-fit: contain; height: 100mm; padding:10px;" alt="{{getCorrectAltText(details.desc)}}">
                         <div class="card-header">
                             <div class="row">
-                                <div class="col-6"><button class="btn btn-primary" [routerLink]="['/stockdetails', details._id]">Get Stock Details</button></div>
-                                <div class="col-6"><button class="btn btn-primary"(click)="DownloadQR(details._id)">Download QR Code</button></div>
+                                <div class="col-6"><button class="btn btn-primary" [routerLink]="['/stockdetails', details._id]" matTooltip="Go to this stock details page"
+                                    aria-label="Button that leads to the current stock details page" matTooltipPosition="above">Get Stock Details</button></div>
+                                <div class="col-6"><button class="btn btn-primary"(click)="DownloadQR(details._id)"
+                                    aria-label="Button that leads to the current stocks details page" matTooltipPosition="above"matTooltip="Download the QR code">Download QR Code</button></div>
                             </div>
                         </div>
                         <div class="card-body" style="background-color: #185c9b; color: white;">
@@ -65,7 +68,7 @@
                 </div>
                 <div class="row">&nbsp;</div>
                     <div class="col-5"><label for="img" class="form-label">Stock Image</label>
-                        <input type="file" accept="image/*" class="form-control" id="img"
+                        <input #imgInput type="file" accept="image/*" class="form-control" id="img"
                         
                         (change)="onFileChange($event)"></div>
                 </div>
@@ -73,7 +76,8 @@
                   <div class="row">
                     <div class="col-3"> <span *ngIf="isDetailsIncomplete()">You must complete all fields</span>
                         <button *ngIf="!isDetailsIncomplete()" type="submit"
-                            class="btn btn-primary">Submit</button></div>
+                            class="btn btn-primary" matTooltip="Submit the new details"
+                            aria-label="Button that submits new details" matTooltipPosition="right">Submit</button></div>
             </div>
             <div class="row">&nbsp;</div>
           </form>

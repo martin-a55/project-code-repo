@@ -2,7 +2,8 @@
     <div class="container">
       <div class="row">&nbsp;</div>
         <div class="col-6">
-            <button class="btn btn-primary"(click)="ChangeImage()">Toggle Images</button>
+            <button class="btn btn-primary"(click)="ChangeImage()"  matTooltip="Toggle between QR and stock images"
+            aria-label="Button that toggles between images" matTooltipPosition="left">Toggle Images</button>
         </div>
         <div class="row">&nbsp;</div>
         <div class="row">
@@ -48,8 +49,10 @@
               <img class = "card-img-top" [attr.src]="'https://projectqrstore.blob.core.windows.net/qrimagestore/' + item._id + '.png'" style="object-fit: contain; height: 100mm; padding:10px;" alt="A QR code for the assosiated stock location entry">
               <div class="card-header">
                   <div class="row">
-                      <div class="col-6"><button class="btn btn-primary" [routerLink]="['/location', item._id]">Get Location Details</button></div>
-                      <div class="col-6"><button class="btn btn-primary"(click)="DownloadQR(item._id)">Download QR Code</button></div>
+                      <div class="col-6"><button class="btn btn-primary" [routerLink]="['/location', item._id]" matTooltip="Go to this stocks location page"
+                        aria-label="Button that leads to the current stocks location page" matTooltipPosition="above">Get Location Details</button></div>
+                      <div class="col-6"><button class="btn btn-primary"(click)="DownloadQR(item._id)"
+                        aria-label="Button that leads to the current stocks details page" matTooltipPosition="above"matTooltip="Download the QR code">Download QR Code</button></div>
                   </div>
               </div>
               <div class="card-body" style="background-color: #185c9b; color: white;">
@@ -72,8 +75,10 @@
         <img class = "card-img-top" [attr.src]="'https://projectqrstore.blob.core.windows.net/' + imageType + item._id + '.png?' + randomNum" style="object-fit: contain; height: 100mm; padding:10px;" alt="{{getCorrectAltText(item.desc)}}">
     <div class="card-header">
         <div class="row">
-            <div class="col-6"><button class="btn btn-primary" [routerLink]="['/stockdetails', item._id]">Get Stock Details</button></div>
-            <div class="col-6"><button class="btn btn-primary"(click)="DownloadQR(item._id)">Download QR Code</button></div>
+            <div class="col-6"><button class="btn btn-primary" [routerLink]="['/stockdetails', item._id]" matTooltip="Go to this stock details page"
+              aria-label="Button that leads to the current stock details page" matTooltipPosition="above">Get Stock Details</button></div>
+            <div class="col-6"><button class="btn btn-primary"(click)="DownloadQR(item._id)"
+              aria-label="Button that leads to the current stocks details page" matTooltipPosition="above"matTooltip="Download the QR code">Download QR Code</button></div>
         </div>
     </div>
     <div class="card-body" style="background-color: #185c9b; color: white;">

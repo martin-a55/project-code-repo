@@ -53,7 +53,7 @@ export class StockComponent {
 
     this.arrayForm = this.formBuilder.group({
       stock: this.formBuilder.array([])
-  })
+    })
   }
 
   
@@ -85,7 +85,7 @@ export class StockComponent {
   OnStockSubmit(){
     this.webService.postStock(this.stockForm.value, this.route.snapshot.params['id'])
     .subscribe((respones: any ) => {
-      
+      this.stockForm.reset(); 
       this.webService.getOneStockLocation(this.route.snapshot.params['id']).subscribe((result : any) => {
         this.RefreshStock();
       });

@@ -6,8 +6,10 @@
                       <img class = "card-img-top" [attr.src]="'https://projectqrstore.blob.core.windows.net/' + imageType + details._id + '.png?' + randomNum" style="object-fit: contain; height: 100mm; padding:10px;" alt="{{getCorrectAltText(details.desc)}}">
                         <div class="card-header">
                             <div class="row">
-                                <div class="col-6"><button class="btn btn-primary" (click)="DownloadQR(details._id)">Download QR Code</button></div>
-                                <div class="col-6"><button class="btn btn-primary"(click)="ChangeImage()">Toggle Image</button></div>
+                                <div class="col-6"><button class="btn btn-primary" (click)="DownloadQR(details._id)" matTooltip="Go to the current stocks details page"
+                      aria-label="Button that leads to the current stocks details page" matTooltipPosition="left">Download QR Code</button></div>
+                                <div class="col-6" ><button style="float: right;" class="btn btn-primary"(click)="ChangeImage()" matTooltip="Toggle between QR and stock images"
+                                  aria-label="Button that toggles between images" matTooltipPosition="left">Toggle Image</button></div>
                         </div>
                         
                         
@@ -82,18 +84,21 @@
                         <div class="row">
                           <div > <span class="col-6"  *ngIf="isDetailsIncomplete()">You must complete all fields</span>
                             <button class="col-3" *ngIf="!isDetailsIncomplete()" type="submit"
-                                class="btn btn-primary">Submit</button></div>
+                                class="btn btn-primary" matTooltip="Submit the edited stock details"
+                                aria-label="Button that submits edited details" matTooltipPosition="right">Submit</button></div>
                         </div>
                       </div>
                     </form>
                       </ng-template>
                       <div class="card-footer" style="background-color: white;">
                         <div class="row">
-                          <div class="col-4"><button class="btn btn-primary" (click)="onToggleEdit()">Edit</button></div>
+                          <div class="col-4"><button class="btn btn-primary" (click)="onToggleEdit()" matTooltip="Toggle Edit on the Stock Details"
+                            aria-label="Button that toggles between editing view on the stock details" matTooltipPosition="right">Edit</button></div>
                           <div class="col-4" >
                             
                           </div>
-                          <div class="col-4"><button class="btn btn-danger" (click)="OnDeleteDetails()">Delete</button></div>
+                          <div class="col-4"><button class="btn btn-danger" (click)="OnDeleteDetails()" matTooltip="Warning! This will delete all assosiated stock"
+                            aria-label="Button that deletes the current stock details" matTooltipPosition="left">Delete</button></div>
                       </div>
                       
                     </div>
@@ -117,14 +122,17 @@
                     <th scope="row">{{details.name}}</th>
                     <td>{{stock.quantity}}</td>
                     <td>{{details.desc}}</td>
-                    <td><button class="btn btn-primary" [routerLink]="['/location', stock.location]">Get Stock Location</button></td>
-                    <td><button class="btn btn-danger" (click)="OnDeleteStock(stock.location ,stock._id)">Delete</button></td>
+                    <td><button class="btn btn-primary" [routerLink]="['/location', stock.location]" matTooltip="Go to the current stocks location page"
+                      aria-label="Button that leads to the current stocks location page" matTooltipPosition="left">Get Stock Location</button></td>
+                    <td><button class="btn btn-danger" (click)="OnDeleteStock(stock.location ,stock._id)" matTooltip="Warning! This will delete the stock entry"
+                      aria-label="Button that deletes the selected stock" matTooltipPosition="right">Delete</button></td>
                   </tr>
                 </tbody>
               </table>
             </div>
             <div class="row">
-              <div class="col-4"><button class="btn btn-primary" (click)="onToggleStockEdit()">Edit</button></div>
+              <div class="col-4"><button class="btn btn-primary" (click)="onToggleStockEdit()" matTooltip="Toggle Edit on all Stock"
+                aria-label="Button that toggles between" matTooltipPosition="right">Edit</button></div>
             </div>
             <div class="row">
                 <pagination-controls (pageChange)="page = $event"></pagination-controls>
@@ -161,14 +169,16 @@
                       
                       <div class="col-3"> <span *ngIf="isStockEditIncomplete(i)">You must complete all fields</span>
                         <button *ngIf="!isStockEditIncomplete(i)" type="submit"
-                            class="btn btn-primary">Submit</button></div>
+                            class="btn btn-primary" class="btn btn-primary" matTooltip="Submit the edited stock"
+                            aria-label="Button that submits edited stock" matTooltipPosition="right">Submit</button></div>
                       &nbsp;
                       <hr>
                       </form>
                     
                 </div>
                 <div class="row">
-                    <div class="col-4"><button class="btn btn-primary" (click)="onToggleStockEdit()">Edit</button></div>
+                    <div class="col-4"><button class="btn btn-primary" (click)="onToggleStockEdit()" matTooltip="Toggle Edit on all Stock"
+                      aria-label="Button that toggles between" matTooltipPosition="right">Edit</button></div>
                 </div>
               <div class="row">
                   <pagination-controls (pageChange)="page = $event"></pagination-controls>

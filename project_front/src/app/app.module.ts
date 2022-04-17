@@ -19,9 +19,9 @@ import { AuthGuard } from '@auth0/auth0-angular';
 import { StockDetailComponent } from './stockdetail.component';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthHttpInterceptor } from '@auth0/auth0-angular';
-
-
-
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatTooltipModule } from '@angular/material/tooltip';
+ 
 var routes: any = [
   {
     path: '',
@@ -60,7 +60,7 @@ var routes: any = [
     AppComponent, HomeComponent, NavComponent, LocationComponent, StockComponent, StockDetailsComponent, StockDetailComponent, SearchComponent
   ],
   imports: [
-    BrowserModule, HttpClientModule, RouterModule.forRoot(routes), ReactiveFormsModule, NgxPaginationModule,
+    BrowserModule, HttpClientModule, RouterModule.forRoot(routes), ReactiveFormsModule, NgxPaginationModule, MatTooltipModule,
     AuthModule.forRoot( {
       domain:'dev-7zcg37ii.us.auth0.com',
       audience: 'https://project_api/',
@@ -68,6 +68,7 @@ var routes: any = [
       httpInterceptor: { allowedList: ['http://localhost:5000/api/v1.0/*', 'https://stockprojectapi.azurewebsites.net/api/v1.0/*'],
     },
       }),
+    BrowserAnimationsModule,
   ],
   providers: [WebService, InsightService, {
     provide: HTTP_INTERCEPTORS, useClass: AuthHttpInterceptor, multi: true,

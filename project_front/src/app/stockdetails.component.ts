@@ -4,7 +4,6 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { AuthService } from '@auth0/auth0-angular';
 import { InsightService } from './insight.service';
 
-
 @Component({
  selector: 'stockdetails',
  templateUrl: './stockdetails.component.html',
