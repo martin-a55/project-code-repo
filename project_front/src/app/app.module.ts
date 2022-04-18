@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
+import { BrowserModule, Title } from '@angular/platform-browser';
 
 import { AppComponent } from './app.component';
 import { WebService } from './web.service';
@@ -70,7 +70,7 @@ var routes: any = [
       }),
     BrowserAnimationsModule,
   ],
-  providers: [WebService, InsightService, {
+  providers: [WebService, Title, InsightService, {
     provide: HTTP_INTERCEPTORS, useClass: AuthHttpInterceptor, multi: true,
   }],
   bootstrap: [AppComponent]
