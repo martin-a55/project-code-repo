@@ -10,3 +10,8 @@ cache
 # Ignore cache folder
 .idea
 
+# Ignore dist folder
+dist
+
+
+
