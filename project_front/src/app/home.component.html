@@ -1,11 +1,11 @@
 <div style="padding-top:70px; height: 100%;">
     <div class="container">
         <div class="row">
-            
 
     <ng-container *ngIf = "authService.isAuthenticated$ | async; else loggedOut">
         <div style=" margin-top: 2em;"></div>
-        <div class="col-6 p-1">
+        <div class="col-6">
+        <div class="col-12 p-1">
             <div class="card" style = "width: 40%; margin: auto" 
                 style="cursor: pointer" >
                 <div class="card-header">
@@ -31,26 +31,124 @@
                     <div class="card-footer" style="background-color: #00adf1;"></div>
             </div>
         </div> 
-
-        <div class="col-6 p-1">
-            <div class="card" style = "width: 40%; margin: auto" 
-            style="cursor: pointer" >
-                <div class="card-header">
-                <h4 class="col-12" style="text-align:center">Test</h4>
-                </div>
-                <div class="card-body" style="background-color: #185c9b; color: white;">
-                    <div class="row">
-                        <h4 class="col-12" style="text-align:center">Test</h4>
+        
+        
+            <div class="col-12 p-1">
+                <div class="card" style = "width: 40%; margin: auto" 
+                style="cursor: pointer" >
+                    <div class="card-header" style="background-color: #185c9b; color: white;">
+                    <h4 class="col-12" style="text-align:center;">Stock Summary Report</h4>
                     </div>
+                    <div class="card-body">
+                        <ng-container *ngIf="isStock  else noAmountView">
+                            <div class="row">
+                                <table class="table table-sm">
+                                <thead>
+                                  <tr>
+                                    <th scope="col">Stock Name</th>
+                                    <th scope="col">Quantity</th>
+                                    
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  <tr *ngFor="let details of stock_amount_list | paginate: { itemsPerPage: 5, currentPage: amountPage, id: 'amountPId'}">
+                                    <th scope="row">{{details.name}}</th>
+                                    <td>{{details.total}}</td>
+                                    
+                                    <td><button class="btn btn-primary" [routerLink]="['/stockdetails', details._id]" matTooltip="Go to the current stocks details page"
+                                      aria-label="Button that leads to the current stocks details page" matTooltipPosition="left">Get Stock Details</button></td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                            </div>
+                                <pagination-controls id="amountPId" (pageChange)="amountPage = $event"></pagination-controls>
+                        </ng-container>
+                        <ng-template #noAmountView>
+                            <h5 style="text-align:center">No Stock Over Max</h5>
+                        </ng-template>
+                          </div>
+                    </div>
+                    <div class="card-footer" style="background-color: #00adf1;"></div>
                 </div>
-                <div class="card-footer">
-                    <h4 class="col-12" style="text-align:center">Test</h4>
+        </div>
+        <div class="col-6">
+            <div class="col-12 p-1">
+                <div class="card" style = "width: 40%; margin: auto" 
+                style="cursor: pointer" >
+                    <div class="card-header" style="background-color: #185c9b; color: white;">
+                    <h4 class="col-12" style="text-align:center;">Stock Reorder Report</h4>
+                    </div>
+                    <div class="card-body">
+                        <ng-container *ngIf="isReorder  else noReorderView">
+                            <div class="row">
+                                <table class="table table-sm">
+                                <thead>
+                                  <tr>
+                                    <th scope="col">Stock Name</th>
+                                    <th scope="col">Quantity</th>
+                                    <th scope="col">Reorder</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  <tr *ngFor="let details of reorder_list | paginate: { itemsPerPage: 5, currentPage: reorderPage, id: 'reorderPid' }">
+                                    <th scope="row">{{details.name}}</th>
+                                    <td>{{details.total}}</td>
+                                    <td>{{details.reorder}}</td>
+                                    <td><button class="btn btn-primary" [routerLink]="['/stockdetails', details._id]" matTooltip="Go to the current stocks details page"
+                                      aria-label="Button that leads to the current details location page" matTooltipPosition="left">Get Stock Details</button></td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                            </div>
+                                <pagination-controls id="reorderPid" (pageChange)="reorderPage = $event"></pagination-controls>
+                            </ng-container>
+                            <ng-template #noReorderView>
+                                <h5 style="text-align:center">No Stock Under Reorder</h5>
+                            </ng-template>
+                          </div>
+                    </div>
+                    <div class="card-footer" style="background-color: #00adf1;"></div>
                 </div>
-                <div class="card-footer" style="background-color: #00adf1;"></div>
-            </div>
-        </div> 
+            
 
-    
+            <div class="col-12 p-1">
+                <div class="card" style = "width: 40%; margin: auto" 
+                style="cursor: pointer" >
+                    <div class="card-header" style="background-color: #185c9b; color: white;">
+                    <h4 class="col-12" style="text-align:center;">Over Stocked Report</h4>
+                    </div>
+                    <div class="card-body">
+                        <ng-container *ngIf="isMaxstock  else noMaxstockView">
+                            <div class="row">
+                                <table class="table table-sm">
+                                <thead>
+                                  <tr>
+                                    <th scope="col">Stock Name</th>
+                                    <th scope="col">Quantity</th>
+                                    <th scope="col">Max Stock</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  <tr *ngFor="let details of max_stock_list | paginate: { itemsPerPage: 5, currentPage: maxPage, id: 'maxPId' }">
+                                    <th scope="row">{{details.name}}</th>
+                                    <td>{{details.total}}</td>
+                                    <td>{{details.max}}</td>
+                                    <td><button class="btn btn-primary" [routerLink]="['/stockdetails', details._id]" matTooltip="Go to the current stocks details page"
+                                      aria-label="Button that leads to the current stocks details page" matTooltipPosition="left">Get Stock Details</button></td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                            </div>
+                                <pagination-controls id="maxPId" (pageChange)="maxPage = $event"></pagination-controls>
+                        </ng-container>
+                        <ng-template #noMaxstockView>
+                            <h5 style="text-align:center">No Stock Over Max</h5>
+                        </ng-template>
+                          </div>
+                    </div>
+                    <div class="card-footer" style="background-color: #00adf1;"></div>
+                </div>
+            </div>
     </ng-container>
     <ng-template #loggedOut>
         

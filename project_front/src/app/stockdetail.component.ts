@@ -24,9 +24,9 @@ export class StockDetailComponent {
   arrayFrom: any; 
 
   async ngOnInit() {
-    this.insight.logPageView("Stock Page Viewed"); 
+    this.insight.logPageView("Stock Detail Page Viewed"); 
 
-    this.insight.logEvent("Stock Page Loaded ");
+    this.insight.logEvent("Stock Detail Page Loaded ");
 
     this.webService.getOneStockDetails(this.route.snapshot.params['id']).subscribe((result : any) => {
       this.details = result
@@ -217,6 +217,7 @@ arrayForm = this.formBuilder.group({
 isDetailsIncomplete() {
       return this.isDetailsInvalid('name') ||
       this.isDetailsInvalid('desc') ||
+      this.isDetailsInvalid('max') ||
       this.isDetailsInvalid('reorder'); 
     }
   

@@ -2,9 +2,12 @@
     <div class="fixed-top" style="background-color: #00adf1; Width:100%; height: 65px">
 </div>
    <div class="navbar navbar-expand-sm navbar-dark fixed-top" style="background-color: #185c9b;">
-        <span class="navbar-brand" style="padding-left: 10px; cursor: pointer;"  routerLink='/'>Stock Managment System</span>
+        <span class="navbar-brand" style="padding-left: 10px; cursor: pointer;"  routerLink='/'>Convayor Tek Stock Managment</span>
         <ng-container *ngIf = "authService.isAuthenticated$ | async">
         <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link text-light" routerLink='/'>Home</a>
+        </li>
             <li class="nav-item">
                     <a class="nav-link text-light" routerLink='/location'>Stock Location</a>
             </li>

@@ -50,11 +50,12 @@
                                 <input id="reorder" name="reorder"
                                     class="form-control" 
                                     formControlName="reorder"
-                                    type="text"
+                                    type="number"
                                     [ngClass]="{'error': isDetailsInvalid('reorder')}"
                                     [ngModel]="details.reorder">
                         </div></div>
                               </div>
+                              <div class="row">&nbsp;</div>
                               <div class="row">
                                 <div class="col-6"></div>
                                 <div class="col-3"><label for="Max">Max Stock:</label></div>
@@ -63,7 +64,7 @@
                                   <input id="max" name="max"
                                       class="form-control" 
                                       formControlName="max"
-                                      type="text"
+                                      type="number"
                                       [ngClass]="{'error': isDetailsInvalid('max')}"
                                       [ngModel]="details.max">
                           </div></div>

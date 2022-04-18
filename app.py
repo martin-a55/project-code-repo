@@ -238,7 +238,10 @@ def delete_location(id):
 @requires_auth
 def add_new_stock(id):
     if "details" in request.form and "quantity" in request.form:
-        new_stock = { "_id" : ObjectId(), "details" : request.form["details"], "quantity" : request.form["quantity"] }
+        quantity = request.form["quantity"]
+        if int(quantity) < 0:
+            quantity = "0"
+        new_stock = { "_id" : ObjectId(), "details" : request.form["details"], "quantity" : quantity }
         stockCol.update_one( { "_id" : ObjectId(id) }, { "$push": { "stock" : new_stock } } )
         new_stock_link = "http://localhost:5000/api/v1.0/location/" + id + "/" + str(new_stock['_id'])
         return make_response( jsonify( { "url" : new_stock_link } ), 201 )
@@ -288,7 +291,10 @@ def get_stock(lid, sid):
 @requires_auth
 def edit_stock(lid, sid):
     if "details" in request.form and "quantity" in request.form:
-        edited_stock = {"stock.$.details" : request.form["details"], "stock.$.quantity" : request.form["quantity"]}
+        quantity = request.form["quantity"]
+        if int(quantity) < 0:
+            quantity = "0"
+        edited_stock = {"stock.$.details" : request.form["details"], "stock.$.quantity" : quantity}
         result = stockCol.update_one( { "stock._id" : ObjectId(sid) }, { "$set" : edited_stock } )
         edit_comment_url = "http://localhost:5000/api/v1.0/location/" + lid + "/stock/" + lid
         if result.matched_count == 1:
@@ -330,11 +336,13 @@ def get_one_stock_details(id):
 @requires_auth
 def add_details():
     if "name" in request.form and "desc" in request.form and "reorder" in  request.form and "max" in  request.form and "img" in request.files:
-
+        reorder = int(request.form["reorder"])
+        max = int(request.form["max"])
+        reorder, max = min_max_check(reorder, max)
         new_details = { "name" : request.form["name"],
                         "desc" : request.form["desc"],
-                        "reorder": request.form["reorder"],
-                        "max": request.form["max"]
+                        "reorder": str(reorder),
+                        "max": str(max)
                          }
         new_details_id = detailsCol.insert_one(new_details)
         new_id = str(new_details_id.inserted_id)
@@ -366,11 +374,14 @@ def add_details():
 @requires_auth
 def edit_details(id):
     if "name" in request.form and "desc" in request.form and "reorder" in request.form and "max" in request.form and "img" in request.files:
+        reorder = int(request.form["reorder"])
+        max = int(request.form["max"])
+        reorder, max = min_max_check(reorder, max)
         update_details = detailsCol.update_one( { "_id" : ObjectId(id) },
                                         { "$set" : { "name" : request.form["name"],
                                                     "desc" : request.form["desc"],
-                                                    "reorder": request.form["reorder"],
-                                                    "max": request.form["max"],
+                                                    "reorder": str(reorder),
+                                                    "max":  str(max),
                                         } } )
         if update_details.matched_count == 1:
             if "image/" in request.files["img"].content_type:
@@ -438,6 +449,7 @@ def search_stock():
         return make_response(jsonify({"error": "Invalid field value"}), 404)
 
 @app.route("/api/v1.0/stock/reorder", methods=["GET"])
+@requires_auth
 def get_stock_reorder():
     all_restock_details = []
     for details in detailsCol.find():
@@ -459,6 +471,50 @@ def get_stock_reorder():
             all_restock_details.append(new_details)
 
     return make_response(jsonify(all_restock_details), 200)
+
+@app.route("/api/v1.0/stock/maxstock", methods=["GET"])
+@requires_auth
+def get_over_max_stock():
+    all_max_details = []
+    for details in detailsCol.find():
+        details["_id"] = str(details["_id"])
+        stock_amount = 0;
+        for location in stockCol.find():
+            for stock in location["stock"]:
+                if stock["details"] == details["_id"]:
+                    stock_amount += int(stock["quantity"])
+        if stock_amount > int(details["max"]):
+            new_details = {
+                "_id": details['_id'],
+                "name": details["name"],
+                "total": str(stock_amount),
+                "reorder": details["reorder"],
+                "max": details["max"]
+
+            }
+            all_max_details.append(new_details)
+
+    return make_response(jsonify(all_max_details), 200)
+
+@app.route("/api/v1.0/stock/amount", methods=["GET"])
+def get_all_stock_amounts():
+    all_amount_details = []
+    for details in detailsCol.find():
+        details["_id"] = str(details["_id"])
+        stock_amount = 0;
+        for location in stockCol.find():
+            for stock in location["stock"]:
+                if stock["details"] == details["_id"]:
+                    stock_amount += int(stock["quantity"])
+        new_details = {
+                "_id": details['_id'],
+                "name": details["name"],
+                "total": str(stock_amount),
+                "reorder": details["reorder"],
+                "max": details["max"]
+            }
+        all_amount_details.append(new_details)
+    return make_response(jsonify(all_amount_details), 200)
 
 
 def search_all(value):
@@ -486,7 +542,8 @@ def search_all(value):
     for details in detailsCol.find({"$or": [
         {'name': {"$regex": value, "$options": 'i'}},
         {'desc': {"$regex": value, "$options": 'i'}},
-        {'reorder': {"$regex": value, "$options": 'i'}}
+        {'reorder': {"$regex": value, "$options": 'i'}},
+        {'max': {"$regex": value, "$options": 'i'}}
     ]}):
         new_details = {"_id": str(details['_id']),
                        "name": details["name"],
@@ -526,6 +583,14 @@ def search_details(field, value):
                        }
         data_to_return.append(new_details)
     return data_to_return
+
+def min_max_check(min, max):
+    if min < 0:
+        min = 0
+    if min >= max:
+        max = min + 1
+    return min, max
+
 
 def create_qr(id):
     input_data = qr_url + "/location/" + id

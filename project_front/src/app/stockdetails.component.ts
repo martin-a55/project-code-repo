@@ -18,9 +18,9 @@ export class StockDetailsComponent {
   randomNum : number = 1; 
 
   async ngOnInit() {
-    this.insight.logPageView("Locations Page Viewed"); 
+    this.insight.logPageView("All Stock Details Page Viewed"); 
 
-    this.insight.logEvent("Locations Page Loaded ");
+    this.insight.logEvent("All Stock Details Loaded ");
 
 
     this.webService.getStockDetails().subscribe((result : any) => {

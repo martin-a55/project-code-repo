@@ -3,6 +3,7 @@ import { WebService } from './web.service';
 import { FormBuilder, Validators } from '@angular/forms';
 import { AuthService } from '@auth0/auth0-angular';
 import { Router, ActivatedRoute } from '@angular/router';
+import { InsightService } from './insight.service';
 
 
 @Component({
@@ -12,7 +13,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 })
 
 export class SearchComponent {
-  constructor(public webService: WebService, private formBuilder: FormBuilder, public authService: AuthService, private route: ActivatedRoute, public router: Router) {}
+  constructor(public webService: WebService, private formBuilder: FormBuilder, public authService: AuthService, private route: ActivatedRoute, public router: Router, private insight: InsightService,) {}
 
   searchForm: any;
   searchField : any; 
@@ -24,6 +25,10 @@ export class SearchComponent {
   randomNum : number = 1; 
   
   async ngOnInit() {
+
+    this.insight.logPageView("Search Page Viewed"); 
+
+    this.insight.logEvent("Search Details Loaded ");
     
     this.searchForm = this.formBuilder.group({
       value: ['', Validators.required],
