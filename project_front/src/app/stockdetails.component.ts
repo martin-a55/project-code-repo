@@ -37,10 +37,12 @@ export class StockDetailsComponent {
     });
   }
 
+  //Downloads the QR code based on ID
   DownloadQR(id : any){
     window.open('https://projectqrstore.blob.core.windows.net/qrimagestore/' + id + '.png')
   } 
 
+  //updates the image between a QR code or the stock image
   ChangeImage(){
     if(this.imageType == "qrimagestore/"){
       this.imageType = "stockimagestore/";
@@ -53,6 +55,7 @@ export class StockDetailsComponent {
     } 
   } 
   
+  //submits the details form
   OnDetailsSubmit(){
     this.webService.postDetails(this.detailsForm.value)
     .subscribe((respones: any ) => {
@@ -66,6 +69,7 @@ export class StockDetailsComponent {
     });
   }
 
+  //get the image when the file updates
   onFileChange(event : any) {
     var file = new File([""], "noimg")
     if (event.target.files.length > 0) {
@@ -83,6 +87,7 @@ export class StockDetailsComponent {
     }
   }
 
+  //Gets the correct alt text for alt text
   getCorrectAltText(desc : any){
     if(this.imageType == "qrimagestore/"){
       return "A QR code for the assosiated stock details entry";
@@ -92,12 +97,13 @@ export class StockDetailsComponent {
     }
   }
 
-  
+  //checks if the details form is valid
   isDetailsInvalid(control: any) {
     return this.detailsForm.controls[control].invalid &&
             this.detailsForm.controls[control].touched;
    }
 
+   //checks if the details form is untouched
   isDetailsUntouched() {
     return this.detailsForm.controls.name.pristine ||
             this.detailsForm.controls.desc.pristine ||
@@ -105,6 +111,7 @@ export class StockDetailsComponent {
             this.detailsForm.controls.reorder.pristine;     
   }
 
+  //checks if the detials form is complete
     isDetailsIncomplete() {
       return this.isDetailsInvalid('name') ||
       this.isDetailsInvalid('desc') ||

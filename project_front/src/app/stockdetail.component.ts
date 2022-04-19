@@ -51,11 +51,12 @@ arrayForm = this.formBuilder.group({
 })
 
   
-
+//Downloads the QR code based on ID
   DownloadQR(id : any){
     window.open('https://projectqrstore.blob.core.windows.net/qrimagestore/' + id + '.png')
   }
 
+  //Toggles the edit boolean
   onToggleEdit(){
     if(this.toggleEdit){
       this.toggleEdit = false
@@ -65,6 +66,7 @@ arrayForm = this.formBuilder.group({
     }
   }
 
+  //Submits the edit form and updates the form
   OnEditSubmit(){
     this.webService.updateDetails(this.editForm.value, this.route.snapshot.params['id'])
     .subscribe((respones: any ) => {
@@ -80,18 +82,21 @@ arrayForm = this.formBuilder.group({
     
   }
 
+  //deletes the stock detaisl
   OnDeleteDetails(){
     this.webService.deleteDetails(this.route.snapshot.params['id']).subscribe(() => {
       this.router.navigateByUrl("/stockdetails");
     }); 
   }
 
+  //deletes the stock
   OnDeleteStock(lid:any, sid: any){
     this.webService.deleteStock(lid, sid).subscribe(() => {
       this.RefreshStock();
     }); 
   }
 
+  //Refresh the stock and the edit array form  
   RefreshStock(){
     this.webService.getStockByDetails(this.route.snapshot.params['id']).subscribe((result : any) => {
       this.stock_list = result; 
@@ -115,12 +120,14 @@ arrayForm = this.formBuilder.group({
     });
   }
 
+  //refreshs the stock details
   RefreshDetails(){
     this.webService.getStockDetails().subscribe((result : any) => {
       this.stock_details = result; 
       });
   }
 
+  //get the image when the file updates
   onFileChange(event : any) {
     var file = new File([""], "noimg")
     if (event.target.files.length > 0) {
@@ -138,6 +145,7 @@ arrayForm = this.formBuilder.group({
     }
   }
 
+  //updates the image between a QR code or the stock image
   ChangeImage(){
     if(this.imageType == "qrimagestore/"){
       this.imageType = "stockimagestore/";
@@ -150,6 +158,7 @@ arrayForm = this.formBuilder.group({
     } 
   } 
 
+  //Gets the correct alt text for alt text
   getCorrectAltText(desc : any){
     if(this.imageType == "qrimagestore/"){
       return "A QR code for the assosiated stock details entry";
@@ -159,10 +168,12 @@ arrayForm = this.formBuilder.group({
     }
   }
 
+  //gets the stock form array
   get stockEdit() {
     return this.arrayForm.controls["stock"] as FormArray;
   }
 
+  //adds a new stock from to the form array
   addStockForm() {
     const stockEditForm = this.formBuilder.group({
         quantity: ['']
@@ -171,11 +182,13 @@ arrayForm = this.formBuilder.group({
     this.stockEdit.push(stockEditForm);
   }
 
+  //get the form control from the from array
   getFormControl(id: any){
     var actual_id = (12 * (this.page -1)) + id;
     return this.stockEdit.at(actual_id) as FormGroup; 
   }
 
+  //toggles between the stock array
   onToggleStockEdit(){
     if(this.toggleStockEdit){
       this.toggleStockEdit = false 
@@ -185,36 +198,42 @@ arrayForm = this.formBuilder.group({
     }
   }
 
+  //submits the stock edit form and refresh the stock
   OnEditStockSubmit(lid: any, sid: any, id: any){
     this.webService.updateStock(this.getFormControl(id).value, lid, sid)
     .subscribe((respones: any ) => {
         this.RefreshStock();
     });
-    
   }
 
+  //clears the form array
   ClearFormArray(array: FormArray){
     while (array.length != 0) {
       array.removeAt(0)
     }
   }
 
+  //checks is the stock form is valid
   isStockEditInvalid(control: any, id: any) {
       return this.getFormControl(id).controls[control].invalid &&
               this.getFormControl(id).controls[control].touched;
   }
   
+  //checks the stock edit form
   isStockEditIncomplete(id: any) {
         return this.isStockEditInvalid('details', id) ||
         this.isStockEditInvalid('qty', id);
         
   }
 
+  //checks if details form are valid
   isDetailsInvalid(control: any) {
     return this.editForm.controls[control].invalid &&
             this.editForm.controls[control].touched;
    }
-isDetailsIncomplete() {
+
+   //checks if details are incomplete
+  isDetailsIncomplete() {
       return this.isDetailsInvalid('name') ||
       this.isDetailsInvalid('desc') ||
       this.isDetailsInvalid('max') ||

@@ -15,16 +15,19 @@ from functools import wraps
 from jose import jwt
 from urllib.request import urlopen
 
-
+#setup flask app
 app = Flask(__name__)
 CORS(app)
+
+#set QR url (local host for local testing)
 qr_url = 'https://stockmanagementapp.z33.web.core.windows.net'
 #qr_url = "http://localhost:4200"
 
+#create blobs
 blob = BlockBlobService("projectqrstore", "sW3gcdD1a/JOkFYmdYhyV7tvPBCfOoW/laR0zLQJPH1vXTjHa5m/XWh6XLUUvXLv3FYq6oVKLcTbzoiILyYhHw==")
 blobDelete = BaseBlobService("projectqrstore", "sW3gcdD1a/JOkFYmdYhyV7tvPBCfOoW/laR0zLQJPH1vXTjHa5m/XWh6XLUUvXLv3FYq6oVKLcTbzoiILyYhHw==")
 
-
+#connect to azure cosmos mongo db using pymongo
 client_connection_string = "mongodb://stockmongodb:RyuylNx9GESyqqV2j6aC0NHeWVJ5gdywQZEMwiomWF4MCXsqbqiOQNjuFamXny2GaYVOBj9znHRqBN0D9Ld3lg==@stockmongodb.mongo.cosmos.azure.com:10255/?ssl=true&retrywrites=false&replicaSet=globaldb&maxIdleTimeMS=120000&appName=@stockmongodb@"
 client = MongoClient(client_connection_string)
 stockDB = client["StockDatabase"]
@@ -169,7 +172,7 @@ def get_one_stock_location(id):
     else:
         return make_response(jsonify( {"error": "Invalid Stock Location ID, check your location exists and try again"}), 404)
 
-#API endpoint for getting adding a new stock location
+#API endpoint for  adding a new stock location
 @app.route("/api/v1.0/location", methods=["POST"])
 @requires_auth
 def add_location():
@@ -223,6 +226,7 @@ def edit_location(id):
     else:
         return make_response( jsonify( { "error" : "Missing form data" } ), 404)
 
+#API endpoint for deleteing stock locations
 @app.route("/api/v1.0/location/<string:id>", methods=["DELETE"])
 @requires_auth
 def delete_location(id):
@@ -234,6 +238,7 @@ def delete_location(id):
     else:
         return make_response( jsonify( {"error": "Invalid Stock Location ID, check your location exists and try again"} ), 404)
 
+#API endpoint for adding new stock
 @app.route("/api/v1.0/location/<string:id>/stock", methods=["POST"])
 @requires_auth
 def add_new_stock(id):
@@ -248,6 +253,7 @@ def add_new_stock(id):
     else:
         return make_response( jsonify( {"error":"Missing form data"} ), 404)
 
+#API endpoint for getting one stock
 @app.route("/api/v1.0/location/<string:id>/stock", methods=["GET"])
 @requires_auth
 def get_all_stock(id):
@@ -268,6 +274,7 @@ def get_all_stock(id):
     else:
         return make_response(jsonify( { "error": "Invalid Stock Location ID, check your location exists and try again" }), 404)
 
+#API endpoint for getting all stock
 @app.route("/api/v1.0/location/<lid>/stock/<sid>", methods=["GET"])
 @requires_auth
 def get_stock(lid, sid):
@@ -287,6 +294,7 @@ def get_stock(lid, sid):
                         }
             return make_response( jsonify( new_stock ), 200)
 
+#API endpoint for editing one stock
 @app.route("/api/v1.0/location/<lid>/stock/<sid>", methods=["PUT"])
 @requires_auth
 def edit_stock(lid, sid):
@@ -303,6 +311,7 @@ def edit_stock(lid, sid):
             return make_response(jsonify({ "error": "Invalid Stock Location or Stock ID, check your location and stock exist and try again" }), 404)
     return make_response(jsonify({"error": "Missing form data"}), 404)
 
+#API endpoint for deleting one stock
 @app.route("/api/v1.0/location/<lid>/stock/<sid>", \
  methods=["DELETE"])
 @requires_auth
@@ -313,6 +322,7 @@ def delete_stock(lid, sid):
     else:
         return make_response(jsonify({ "error": "Invalid Stock Location or Stock ID, check your location and stock exist and try again" }), 404)
 
+#API endpoint for getting all stock details
 @app.route("/api/v1.0/details", methods=["GET"])
 @requires_auth
 def get_all_stock_details():
@@ -322,6 +332,7 @@ def get_all_stock_details():
         all_stock_details.append(stock_details)
     return make_response( jsonify(all_stock_details), 200 )
 
+#API endpoint for getting one stock details
 @app.route("/api/v1.0/details/<string:id>", methods=["GET"])
 @requires_auth
 def get_one_stock_details(id):
@@ -332,6 +343,7 @@ def get_one_stock_details(id):
     else:
         return make_response(jsonify( {"error": "Invalid Stock Detail ID, check your details exists and try again"}), 404)
 
+#API endpoint for add new stock details
 @app.route("/api/v1.0/details", methods=["POST"])
 @requires_auth
 def add_details():
@@ -370,6 +382,7 @@ def add_details():
     else:
         return make_response( jsonify( {"error":"Missing form data"} ), 404)
 
+#API endpoint for editing stock details
 @app.route("/api/v1.0/details/<string:id>", methods=["PUT"])
 @requires_auth
 def edit_details(id):
@@ -393,6 +406,7 @@ def edit_details(id):
     else:
         return make_response( jsonify( { "error" : "Missing form data" } ), 404)
 
+#API endpoint for deleteing stock details
 @app.route("/api/v1.0/details/<string:id>", methods=["DELETE"])
 @requires_auth
 def delete_details(id):
@@ -410,6 +424,7 @@ def delete_details(id):
     else:
         return make_response( jsonify( {"error": "Invalid Stock Details ID, check your location exists and try again"} ), 404)
 
+#API endpoint for getting stock based on its stock details
 @app.route("/api/v1.0/details/<string:id>/stock", methods=["GET"])
 @requires_auth
 def get_all_stock_by_details(id):
@@ -429,6 +444,7 @@ def get_all_stock_by_details(id):
                 all_stock_details.append(new_stock)
     return make_response( jsonify(all_stock_details), 200 )
 
+#API endpoint for searching for stock locations and stock details
 @app.route("/api/v1.0/stock/search", methods=["GET"])
 @requires_auth
 def search_stock():
@@ -448,6 +464,7 @@ def search_stock():
     else:
         return make_response(jsonify({"error": "Invalid field value"}), 404)
 
+#API endpoint for getting details where stock is under reorder
 @app.route("/api/v1.0/stock/reorder", methods=["GET"])
 @requires_auth
 def get_stock_reorder():
@@ -466,12 +483,12 @@ def get_stock_reorder():
                 "total": str(stock_amount),
                 "reorder": details["reorder"],
                 "max": details["max"],
-                "quantity": stock['quantity']
             }
             all_restock_details.append(new_details)
 
     return make_response(jsonify(all_restock_details), 200)
 
+#API endpoint for getting details where stock is over max
 @app.route("/api/v1.0/stock/maxstock", methods=["GET"])
 @requires_auth
 def get_over_max_stock():
@@ -490,12 +507,12 @@ def get_over_max_stock():
                 "total": str(stock_amount),
                 "reorder": details["reorder"],
                 "max": details["max"]
-
             }
             all_max_details.append(new_details)
 
     return make_response(jsonify(all_max_details), 200)
 
+#API endpoint for getting details with stock totals
 @app.route("/api/v1.0/stock/amount", methods=["GET"])
 @requires_auth
 def get_all_stock_amounts():
@@ -517,7 +534,7 @@ def get_all_stock_amounts():
         all_amount_details.append(new_details)
     return make_response(jsonify(all_amount_details), 200)
 
-
+#Function for searching by all field values
 def search_all(value):
     data_to_return = []
     for location in stockCol.find({"$or": [
@@ -555,6 +572,7 @@ def search_all(value):
         data_to_return.append(new_details)
     return data_to_return
 
+#Function for searching by location field values
 def search_location(field, value):
     data_to_return = []
     for location in stockCol.find({field: {"$regex": value, "$options": 'i'}}):
@@ -573,6 +591,7 @@ def search_location(field, value):
         data_to_return.append(new_location)
     return data_to_return
 
+#Function for searching by all details field values
 def search_details(field, value):
     data_to_return = []
     for details in detailsCol.find({field: {"$regex": value, "$options": 'i'}}):
@@ -585,6 +604,7 @@ def search_details(field, value):
         data_to_return.append(new_details)
     return data_to_return
 
+#Function for ensuring int values are positive and that the max cant be lower than the min
 def min_max_check(min, max):
     if min < 0:
         min = 0
@@ -592,7 +612,7 @@ def min_max_check(min, max):
         max = min + 1
     return min, max
 
-
+#Function for creating QR codes and returning the image name
 def create_qr(id, page):
     input_data = qr_url + page + id
     qr = qrcode.QRCode(version=1, box_size=10, border=5)

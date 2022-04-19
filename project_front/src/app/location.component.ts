@@ -36,10 +36,12 @@ export class LocationComponent {
     });
   }
 
+  //downloads a QR based on given ID
   DownloadQR(id : any){
     window.open('https://projectqrstore.blob.core.windows.net/qrimagestore/' + id + '.png')
   }
 
+  //submits the location form details as well as reseting the form and refreshing the location list
   OnLocationSubmit(){
     this.webService.postLocation(this.locationForm.value)
     .subscribe((respones: any ) => {
@@ -51,11 +53,13 @@ export class LocationComponent {
     });
   }
 
+  //checks if the location form is valid
   isLocationInvalid(control: any) {
     return this.locationForm.controls[control].invalid &&
             this.locationForm.controls[control].touched;
    }
 
+  //checks if the location form is untouched
   isLocationUntouched() {
     return this.locationForm.controls.location.pristine ||
             this.locationForm.controls.warehouse.pristine ||
@@ -64,6 +68,7 @@ export class LocationComponent {
             this.locationForm.controls.column.pristine;      
   }
 
+  //checks if the location form is incomplete
     isLocationIncomplete() {
       return this.isLocationInvalid('location') ||
       this.isLocationInvalid('warehouse') ||

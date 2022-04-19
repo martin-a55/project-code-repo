@@ -25,6 +25,7 @@ export class NavComponent {
        this.searchForm.controls['col'].setValue('location')
    }
    
+   //on submit routes the user to the search page with query values from the form
    onSearchSubmit(){
         
         this.router.navigate(

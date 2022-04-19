@@ -51,6 +51,7 @@ export class SearchComponent {
    
   }
   
+  //Subits the search from and reopens the page with the new query perameters
   onSearchSubmit(){
     this.router.navigate(
       ['/search'],
@@ -63,10 +64,12 @@ export class SearchComponent {
        
   }
 
+  //Downloads the QR code based of an ID
   DownloadQR(id : any){
     window.open('https://projectqrstore.blob.core.windows.net/qrimagestore/' + id + '.png')
   }
 
+  //checks which collection a entry came from and changes it values based on this
   checkIsCol(colValue: any){
     if(colValue == "location"){
       this.isCol = true; 
@@ -77,6 +80,7 @@ export class SearchComponent {
     return this.isCol; 
   }
 
+  //updates the image between a QR code or the stock image
   ChangeImage(){
     if(this.imageType == "qrimagestore/"){
       this.imageType = "stockimagestore/";
@@ -89,6 +93,7 @@ export class SearchComponent {
     } 
   } 
 
+  //Gets the correct alt text for alt text
   getCorrectAltText(desc : any){
     if(this.imageType == "qrimagestore/"){
       return "A QR code for the assosiated stock details entry";
