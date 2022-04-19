@@ -18,8 +18,8 @@ from urllib.request import urlopen
 
 app = Flask(__name__)
 CORS(app)
-
-qr_url = "http://localhost:4200"
+qr_url = 'https://stockmanagementapp.z33.web.core.windows.net'
+#qr_url = "http://localhost:4200"
 
 blob = BlockBlobService("projectqrstore", "sW3gcdD1a/JOkFYmdYhyV7tvPBCfOoW/laR0zLQJPH1vXTjHa5m/XWh6XLUUvXLv3FYq6oVKLcTbzoiILyYhHw==")
 blobDelete = BaseBlobService("projectqrstore", "sW3gcdD1a/JOkFYmdYhyV7tvPBCfOoW/laR0zLQJPH1vXTjHa5m/XWh6XLUUvXLv3FYq6oVKLcTbzoiILyYhHw==")
@@ -185,7 +185,7 @@ def add_location():
         new_location_id = stockCol.insert_one(new_location)
         new_id = str(new_location_id.inserted_id)
 
-        qr_path = create_qr(new_id)
+        qr_path = create_qr(new_id, "/location/")
 
         blob.create_blob_from_path("qrimagestore", new_id + ".png", qr_path)
 
@@ -347,7 +347,7 @@ def add_details():
         new_details_id = detailsCol.insert_one(new_details)
         new_id = str(new_details_id.inserted_id)
 
-        qr_path = create_qr(new_id)
+        qr_path = create_qr(new_id, "/stockdetails/")
 
         blob.create_blob_from_path("qrimagestore", new_id + ".png", qr_path)
 
@@ -497,6 +497,7 @@ def get_over_max_stock():
     return make_response(jsonify(all_max_details), 200)
 
 @app.route("/api/v1.0/stock/amount", methods=["GET"])
+@requires_auth
 def get_all_stock_amounts():
     all_amount_details = []
     for details in detailsCol.find():
@@ -592,8 +593,8 @@ def min_max_check(min, max):
     return min, max
 
 
-def create_qr(id):
-    input_data = qr_url + "/location/" + id
+def create_qr(id, page):
+    input_data = qr_url + page + id
     qr = qrcode.QRCode(version=1, box_size=10, border=5)
     qr.add_data(input_data)
     qr.make(fit=True)

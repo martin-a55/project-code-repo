@@ -15,6 +15,4 @@ export class AppComponent {
   async ngOnInit() {
     this.titleService.setTitle(this.title);
   }
-  
-
 }
