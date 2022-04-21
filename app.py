@@ -252,7 +252,7 @@ def add_new_stock(id):
             quantity = "0"
         new_stock = { "_id" : ObjectId(), "details" : request.form["details"], "quantity" : quantity }
         stockCol.update_one( { "_id" : ObjectId(id) }, { "$push": { "stock" : new_stock } } )
-        new_stock_link = response_url +"/api/v1.0/location/" + id + "/" + str(new_stock['_id'])
+        new_stock_link = response_url +"/api/v1.0/location/" + id + "/stock/" + str(new_stock['_id'])
         return make_response( jsonify( { "url" : new_stock_link } ), 201 )
     else:
         return make_response( jsonify( {"error":"Missing form data"} ), 404)
