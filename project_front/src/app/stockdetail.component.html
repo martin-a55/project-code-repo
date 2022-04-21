@@ -6,10 +6,9 @@
                       <img class = "card-img-top" [attr.src]="'https://projectqrstore.blob.core.windows.net/' + imageType + details._id + '.png?' + randomNum" style="object-fit: contain; height: 100mm; padding:10px;" alt="{{getCorrectAltText(details.desc)}}">
                         <div class="card-header">
                             <div class="row">
-                                <div class="col-6"><button class="btn btn-primary" (click)="DownloadQR(details._id)" matTooltip="Go to the current stocks details page"
-                      aria-label="Button that leads to the current stocks details page" matTooltipPosition="left">Download QR Code</button></div>
+                                <div class="col-6"><button class="btn btn-primary" (click)="DownloadQR(details._id)" aria-label="Button that downloads the QR code" matTooltipPosition="above"matTooltip="Download the QR code">Download QR Code</button></div>
                                 <div class="col-6" ><button style="float: right;" class="btn btn-primary"(click)="ChangeImage()" matTooltip="Toggle between QR and stock images"
-                                  aria-label="Button that toggles between images" matTooltipPosition="left">Toggle Image</button></div>
+                                  aria-label="Button that toggles between images" matTooltipPosition="above">Toggle Image</button></div>
                         </div>
                         
                       </div>

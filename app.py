@@ -23,6 +23,10 @@ CORS(app)
 qr_url = 'https://stockmanagementapp.z33.web.core.windows.net'
 #qr_url = "http://localhost:4200"
 
+#set respone URL (local host for local testing)
+response_url = "https://stockprojectapi.azurewebsites.net"
+#response_url = "http://localhost:5000"
+
 #create blobs
 blob = BlockBlobService("projectqrstore", "sW3gcdD1a/JOkFYmdYhyV7tvPBCfOoW/laR0zLQJPH1vXTjHa5m/XWh6XLUUvXLv3FYq6oVKLcTbzoiILyYhHw==")
 blobDelete = BaseBlobService("projectqrstore", "sW3gcdD1a/JOkFYmdYhyV7tvPBCfOoW/laR0zLQJPH1vXTjHa5m/XWh6XLUUvXLv3FYq6oVKLcTbzoiILyYhHw==")
@@ -193,7 +197,7 @@ def add_location():
         blob.create_blob_from_path("qrimagestore", new_id + ".png", qr_path)
 
 
-        new_location_link = "http://localhost:5000/api/v1.0/location/" + new_id
+        new_location_link = response_url + "/api/v1.0/location/" + new_id
         new_qr_link = "https://projectqrstore.blob.core.windows.net/qrimagestore/" + new_id + ".png"
 
         os.remove(new_id + ".png")
@@ -219,7 +223,7 @@ def edit_location(id):
                                             "warehouse" : request.form["warehouse"],
                                                 } } )
         if update_location.matched_count == 1:
-            edited_location_link = "http://localhost:5000/api/v1.0/location/" + id
+            edited_location_link = response_url + "/api/v1.0/location/" + id
             return make_response( jsonify( { "url":edited_location_link } ), 200)
         else:
             return make_response( jsonify( { "error": "Invalid Stock Location ID, check your location exists and try again" } ), 404)
@@ -248,7 +252,7 @@ def add_new_stock(id):
             quantity = "0"
         new_stock = { "_id" : ObjectId(), "details" : request.form["details"], "quantity" : quantity }
         stockCol.update_one( { "_id" : ObjectId(id) }, { "$push": { "stock" : new_stock } } )
-        new_stock_link = "http://localhost:5000/api/v1.0/location/" + id + "/" + str(new_stock['_id'])
+        new_stock_link = response_url +"/api/v1.0/location/" + id + "/" + str(new_stock['_id'])
         return make_response( jsonify( { "url" : new_stock_link } ), 201 )
     else:
         return make_response( jsonify( {"error":"Missing form data"} ), 404)
@@ -304,7 +308,7 @@ def edit_stock(lid, sid):
             quantity = "0"
         edited_stock = {"stock.$.details" : request.form["details"], "stock.$.quantity" : quantity}
         result = stockCol.update_one( { "stock._id" : ObjectId(sid) }, { "$set" : edited_stock } )
-        edit_comment_url = "http://localhost:5000/api/v1.0/location/" + lid + "/stock/" + lid
+        edit_comment_url = response_url + "/api/v1.0/location/" + lid + "/stock/" + lid
         if result.matched_count == 1:
             return make_response( jsonify( {"url":edit_comment_url} ), 200)
         else:
@@ -368,7 +372,7 @@ def add_details():
         else:
             blob.create_blob_from_path("stockimagestore", new_id + ".png", "./placeholder.png")
 
-        new_location_link = "http://localhost:5000/api/v1.0/details/" + new_id
+        new_location_link = response_url +"/api/v1.0/details/" + new_id
         new_qr_link = "https://projectqrstore.blob.core.windows.net/qrimagestore/" + new_id + ".png"
         new_img_link = "https://projectqrstore.blob.core.windows.net/stockimagestore/" + new_id + ".png"
 
@@ -399,7 +403,7 @@ def edit_details(id):
         if update_details.matched_count == 1:
             if "image/" in request.files["img"].content_type:
                 blob.create_blob_from_stream("stockimagestore", id + ".png", request.files["img"])
-            edited_details_link = "http://localhost:5000/api/v1.0/details/" + id
+            edited_details_link = response_url + "/api/v1.0/details/" + id
             return make_response( jsonify( { "url":edited_details_link } ), 200)
         else:
             return make_response( jsonify( { "error": "Invalid Stock Details ID, check your Details exists and try again" } ), 404)
